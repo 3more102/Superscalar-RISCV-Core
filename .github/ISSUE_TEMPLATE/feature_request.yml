@@ -1,0 +1,61 @@
+name: Microarchitecture / Verification Enhancement
+
+description: Propose a scoped CPU, verification, formal, tooling, or documentation improvement.
+title: "enhancement: "
+labels: []
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - CPU microarchitecture
+        - ISA / trap behavior
+        - Verification / coverage
+        - Formal verification
+        - Performance measurement
+        - Synthesis / ASIC flow
+        - CI / developer tooling
+        - Documentation
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: What limitation, verification gap, or engineering goal does this address?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Describe the implementation boundary and expected architectural impact.
+    validations:
+      required: true
+
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification plan
+      description: State the directed/random tests, assertions, formal properties, coverage points, or performance comparisons needed to close the change.
+      placeholder: |
+        - directed test(s):
+        - random regression impact:
+        - assertions/formal:
+        - RTL coverage:
+        - performance comparison:
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope discipline
+      options:
+        - label: The proposal distinguishes model-level expectations from RTL-measured results.
+          required: true
+        - label: Any ASIC PPA/timing claim will require a characterized library and explicit constraints.
+          required: true

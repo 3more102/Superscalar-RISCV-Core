@@ -20,7 +20,7 @@ A synthesizable **32-bit, 2-wide superscalar, in-order issue / in-order retireme
 
 ## Verified status
 
-The retained fully green RTL verification baseline is GitHub Actions **run #20**, commit [`94f6887`](https://github.com/3more102/Superscalar-RISCV-Core/commit/94f688763d81035057f7fe00959bfd4f3e3948fc). All mandatory CI jobs passed on the same RTL revision; the CI badge above tracks the current `main` branch.
+The latest fully green **code/workflow baseline** is GitHub Actions **run #39**, commit [`49a50fb`](https://github.com/3more102/Superscalar-RISCV-Core/commit/49a50fb3b4e9416d612265c9c47d39d6bbafb2bc). All five mandatory jobs passed on that revision. The current `main` branch is ahead only by repository-presentation/documentation commits (`docs/repository_metadata.md`, `.gitattributes`, and CI-provenance/README updates); no RTL, testbench, reference-model, formal-harness, synthesis, or verification-script behavior changed after the verified baseline. The CI badge above tracks the current `main` branch.
 
 | Gate | Executed result |
 |---|---:|
@@ -188,7 +188,7 @@ See [`docs/performance_analysis.md`](docs/performance_analysis.md).
 
 ## Synthesis and lint
 
-Run #20 completed generic Yosys synthesis with **0 `check` problems**. After generic technology mapping the design contained **43,289 Yosys primitive cells**. This is a technology-independent complexity metric only; it is **not** standard-cell area and must not be compared directly with an ASIC gate-equivalent figure.
+The latest fully green code/workflow baseline, run #39, completed generic Yosys synthesis with **0 `check` problems**. After generic technology mapping the design contained **43,289 Yosys primitive cells**. This is a technology-independent complexity metric only; it is **not** standard-cell area and must not be compared directly with an ASIC gate-equivalent figure.
 
 Verilator lint passed the repository policy with **12 warnings**, all from explicitly allowed `UNUSEDSIGNAL` / `UNUSEDPARAM` categories, and **0 unexpected warnings**.
 

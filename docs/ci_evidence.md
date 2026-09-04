@@ -7,9 +7,9 @@ This page records both the **latest fully green code/workflow baseline** and the
 - Repository: `3more102/Superscalar-RISCV-Core`
 - Branch: `main`
 - GitHub Actions workflow: `.github/workflows/rtl-ci.yml`
-- Run: [#39 / 33898231723](https://github.com/3more102/Superscalar-RISCV-Core/actions/runs/33898231723)
-- Verified code/workflow commit: [`49a50fb3b4e9416d612265c9c47d39d6bbafb2bc`](https://github.com/3more102/Superscalar-RISCV-Core/commit/49a50fb3b4e9416d612265c9c47d39d6bbafb2bc)
-- Commit subject: `ci: ignore repository presentation metadata`
+- Run: [#40 / 33898768472](https://github.com/3more102/Superscalar-RISCV-Core/actions/runs/33898768472)
+- Verified code/workflow commit: [`5c99926d7839c35b63ddb39e08d0176cae34313b`](https://github.com/3more102/Superscalar-RISCV-Core/commit/5c99926d7839c35b63ddb39e08d0176cae34313b)
+- Commit subject: `ci: add weekly reproducibility run and skip docs-only changes`
 
 All five mandatory jobs completed with conclusion `success` on that commit:
 
@@ -19,19 +19,21 @@ All five mandatory jobs completed with conclusion `success` on that commit:
 4. Formal Verification
 5. Yosys Synthesis
 
-The current `main` branch is two presentation-only commits ahead of this verified code/workflow baseline: `docs/repository_metadata.md` was updated and `.gitattributes` was added to classify generated evidence. A GitHub compare between `49a50fb` and the current presentation head shows only those two files changed; no RTL, testbench, reference model, formal harness, synthesis script, or verification script changed.
+Run #40 also verifies the scheduled reproducibility workflow itself: the CI now executes automatically every Monday at `03:17 UTC` in addition to source-triggered and manual runs. Documentation-only and repository-presentation changes are excluded from the expensive EDA suite, while RTL, verification, formal, synthesis, and workflow changes remain strict CI triggers.
+
+Subsequent README/CI-evidence edits are documentation-only; they do not modify RTL, testbench, reference-model, formal, synthesis, or verification-script behavior.
 
 ### Latest retained GitHub Actions artifacts
 
 | Artifact | Artifact ID | SHA-256 digest |
 |---|---:|---|
-| reference-verification-reports | 9946586953 | `fe28976e34e1b74bcd0a0763217c2916ff6617b60ffdf55c3003b884656c7acc` |
-| lint-report | 9946603447 | `60bf2c99ede65e74d6de7f2a6b9d744fc87b0826e817636205b215e96a9bbc61` |
-| synthesis-report | 9946607107 | `8aca35ec374ba11d481cd80529cae1f3387339fed9d29da852bc101136bfe231` |
-| rtl-simulation-reports | 9946620154 | `52556085895abea0095b09ec1fcffdfb7904c86551aa78a44c84ecf41dd70514` |
-| formal-reports | 9946672402 | `ce2f19724b191a18d05b07860b88c52957bbb3f780171d5e5c90e169b362bfb4` |
+| reference-verification-reports | 9946785875 | `ccb74a90502a2b1d7d41af56d86d1d49dad443001c1a7e09813f864577bcc78a` |
+| lint-report | 9946803180 | `f295e2ee8c0f04fe8df9118ca9e2f75f777e699f1f693b8f5fca9b0778af9138` |
+| synthesis-report | 9946804221 | `d7c7e0aff3ed3d8bc7c4ebf4dbb403f7d69342a14b10d891488d0b80e104d1d4` |
+| rtl-simulation-reports | 9946822917 | `1e4e9dff40b3b1f2708d92fc4cd6df76d6d71c5ad70ce8a70f88f4f3ce2b689f` |
+| formal-reports | 9946850087 | `1859b6d80959ae0cb9932efa228eb7f4c7250973df5e4a32790097fd21555745` |
 
-These are GitHub-reported artifact digests for run #39.
+These are GitHub-reported artifact digests for run #40.
 
 ## First fully green provenance
 

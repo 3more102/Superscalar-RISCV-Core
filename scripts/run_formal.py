@@ -3,8 +3,8 @@
 
 The project keeps SymbiYosys .sby configurations under formal/, but current
 OSS CAD Suite SBY launches its own Yosys process without the external Slang
-frontend loaded.  This runner therefore proves the same harness assertions
-directly through Yosys-Slang.  A target is reported PASS only when the SAT
+frontend loaded. This runner therefore proves the same harness assertions
+directly through Yosys-Slang. A target is reported PASS only when the SAT
 engine returns success for every assertion under the harness assumptions.
 """
 from pathlib import Path
@@ -71,7 +71,9 @@ for name, files, top, depth, formal_define in targets:
         'opt_clean',
         'flatten',
         f'select -module {top}',
-        f'sat -verify -prove-asserts -set-assumes -seq {depth}',
+        # Counterexamples must be actionable. Primary inputs/outputs are shown
+        # on failure while -verify still makes any failed assertion fatal.
+        f'sat -verify -prove-asserts -set-assumes -show-inputs -show-outputs -seq {depth}',
     ])
     cp = subprocess.run(
         [yosys, '-m', 'slang', '-Q', '-p', script],

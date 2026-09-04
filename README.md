@@ -20,7 +20,7 @@ A synthesizable **32-bit, 2-wide superscalar, in-order issue / in-order retireme
 
 ## Verified status
 
-The latest fully green **code/workflow baseline** is GitHub Actions **run #39**, commit [`49a50fb`](https://github.com/3more102/Superscalar-RISCV-Core/commit/49a50fb3b4e9416d612265c9c47d39d6bbafb2bc). All five mandatory jobs passed on that revision. The current `main` branch is ahead only by repository-presentation/documentation commits (`docs/repository_metadata.md`, `.gitattributes`, and CI-provenance/README updates); no RTL, testbench, reference-model, formal-harness, synthesis, or verification-script behavior changed after the verified baseline. The CI badge above tracks the current `main` branch.
+The latest fully green **code/workflow baseline** is GitHub Actions **run #40**, commit [`5c99926`](https://github.com/3more102/Superscalar-RISCV-Core/commit/5c99926d7839c35b63ddb39e08d0176cae34313b). All five mandatory jobs passed on that revision. Run #40 also validates the weekly reproducibility schedule and the docs-only CI path policy. Subsequent README/CI-evidence commits are documentation-only and do not modify RTL, testbench, reference-model, formal, synthesis, or verification-script behavior. The CI badge above tracks the current `main` branch.
 
 | Gate | Executed result |
 |---|---:|
@@ -188,7 +188,7 @@ See [`docs/performance_analysis.md`](docs/performance_analysis.md).
 
 ## Synthesis and lint
 
-The latest fully green code/workflow baseline, run #39, completed generic Yosys synthesis with **0 `check` problems**. After generic technology mapping the design contained **43,289 Yosys primitive cells**. This is a technology-independent complexity metric only; it is **not** standard-cell area and must not be compared directly with an ASIC gate-equivalent figure.
+The latest fully green code/workflow baseline, run #40, completed generic Yosys synthesis with **0 `check` problems**. After generic technology mapping the design contained **43,289 Yosys primitive cells**. This is a technology-independent complexity metric only; it is **not** standard-cell area and must not be compared directly with an ASIC gate-equivalent figure.
 
 Verilator lint passed the repository policy with **12 warnings**, all from explicitly allowed `UNUSEDSIGNAL` / `UNUSEDPARAM` categories, and **0 unexpected warnings**.
 
@@ -252,7 +252,7 @@ On Windows/WSL, see [`docs/tool_setup_windows.md`](docs/tool_setup_windows.md) a
 4. Formal Verification
 5. Yosys Synthesis
 
-The EDA jobs use OSS CAD Suite and mandatory failures are not hidden with `continue-on-error`.
+The EDA jobs use OSS CAD Suite and mandatory failures are not hidden with `continue-on-error`. Source/tool-flow changes trigger the strict suite, and the workflow also runs automatically every Monday at **03:17 UTC** as a reproducibility check. Documentation-only and repository-presentation changes are intentionally excluded from the expensive EDA rerun.
 
 ## Limitations
 

@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Static integrity audit for SymbiYosys source/configuration.
+"""Static integrity audit for formal source/configuration.
 
-This does NOT prove any RTL property. It only verifies that formal targets are
-self-consistent enough to hand to SBY: referenced files exist, requested tops
-are defined, and the complete-core target contains an explicit reset harness.
+This does NOT prove any RTL property. It verifies that formal targets are
+self-consistent enough to hand to the configured Yosys-Slang/SAT flow:
+referenced files exist, requested tops are defined, combinational harnesses
+expose symbolic primary inputs, and the complete-core target contains an
+explicit reset/environment harness.
 """
 from pathlib import Path
 import re
@@ -19,7 +21,6 @@ if not targets:
 for sby in targets:
     text=sby.read_text()
     rel=str(sby.relative_to(ROOT))
-    # Pull [files] entries (one path per line in this project).
     m=re.search(r'(?ms)^\[files\]\s*\n(.*?)(?=^\[|\Z)',text)
     files=[]
     if not m:
@@ -58,11 +59,44 @@ else:
 h=ROOT/'formal'/'core_harness.sv'
 if h.is_file():
     ht=h.read_text()
-    for needle in ('assume (!reset_n)','assume (reset_n)','f_seen_clock','(* anyseq *)'):
+    for needle in (
+        'input logic reset_n',
+        'input logic [31:0] imem_rdata0',
+        'input logic [31:0] imem_rdata1',
+        'input logic [31:0] dmem_rdata',
+        'assume (!reset_n)',
+        'assume (reset_n)',
+        'f_seen_clock',
+    ):
         if needle not in ht:
             issues.append(f'formal/core_harness.sv: reset/symbolic-environment marker missing: {needle}')
 else:
     issues.append('formal/core_harness.sv missing')
+
+# Combinational proof harnesses must expose their stimulus as top-level primary
+# inputs so Yosys SAT receives real symbolic variables rather than undriven Xs.
+for rel, markers in {
+    'formal/issue_harness.sv': (
+        'input riscv_pkg::decoded_t d0',
+        'input riscv_pkg::decoded_t d1',
+        'input logic stall0',
+        'input logic stall1',
+    ),
+    'formal/alu_branch_harness.sv': (
+        'input logic [31:0] a',
+        'input logic [31:0] b',
+        'input riscv_pkg::alu_op_e alu_op',
+        'input riscv_pkg::branch_op_e br_op',
+    ),
+}.items():
+    p=ROOT/rel
+    if not p.is_file():
+        issues.append(f'{rel} missing')
+        continue
+    text=p.read_text()
+    for needle in markers:
+        if needle not in text:
+            issues.append(f'{rel}: symbolic-primary-input marker missing: {needle}')
 
 rtl=ROOT/'rtl'/'core'/'superscalar_core.sv'
 if rtl.is_file():

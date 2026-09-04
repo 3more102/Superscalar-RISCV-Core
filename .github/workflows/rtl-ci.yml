@@ -1,5 +1,6 @@
 name: RTL CI
 
+# Strict verification workflow; this comment also anchors the hardened checkout/timeout configuration.
 on:
   push:
     paths-ignore:

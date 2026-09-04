@@ -1,12 +1,16 @@
 // Closed formal environment for the complete core.
 // Reset is constrained low for the first sampled clock and high thereafter;
 // instruction/data memory values intentionally remain fully symbolic.
-module core_formal_harness(input logic clk);
-  (* anyseq *) logic reset_n;
-  (* anyseq *) logic [31:0] imem_rdata0;
-  (* anyseq *) logic [31:0] imem_rdata1;
-  (* anyseq *) logic [31:0] dmem_rdata;
-
+module core_formal_harness(
+  input logic clk,
+  input logic reset_n,
+  input logic [31:0] imem_rdata0,
+  input logic [31:0] imem_rdata1,
+  input logic [31:0] dmem_rdata
+);
+  // Top-level inputs are unconstrained independently at each SAT time step.
+  // This is the sequential equivalent of anyseq without relying on frontend
+  // attribute lowering.
   logic f_seen_clock = 1'b0;
   always_ff @(posedge clk) begin
     if (!f_seen_clock) begin

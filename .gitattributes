@@ -1,0 +1,6 @@
+# Keep generated verification evidence from dominating GitHub language statistics.
+*.sv linguist-language=SystemVerilog
+reports/** linguist-generated=true
+*.hex linguist-generated=true
+sw/generated_random/** linguist-generated=true
+sim/generated_random/** linguist-generated=true

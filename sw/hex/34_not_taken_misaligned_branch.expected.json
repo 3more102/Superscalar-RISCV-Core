@@ -1,0 +1,9 @@
+{
+  "trap": "breakpoint",
+  "trap_pc": "0x0000000c",
+  "commits": 3,
+  "regs": {
+    "x1": "0x00000001",
+    "x2": "0x00000022"
+  }
+}

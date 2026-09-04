@@ -1,0 +1,92 @@
+[
+  {
+    "check": "tool detection",
+    "status": "PASS",
+    "returncode": 0
+  },
+  {
+    "check": "directed generation",
+    "status": "PASS",
+    "returncode": 0
+  },
+  {
+    "check": "reference regression",
+    "status": "PASS",
+    "returncode": 0
+  },
+  {
+    "check": "microarchitecture model",
+    "status": "PASS",
+    "returncode": 0
+  },
+  {
+    "check": "divider algorithm stress",
+    "status": "PASS",
+    "returncode": 0
+  },
+  {
+    "check": "front-end replay stress",
+    "status": "PASS",
+    "returncode": 0
+  },
+  {
+    "check": "pytest Python models",
+    "status": "PASS",
+    "returncode": 0
+  },
+  {
+    "check": "required ISA exercise",
+    "status": "PASS",
+    "returncode": 0
+  },
+  {
+    "check": "reference stimulus coverage",
+    "status": "PASS",
+    "returncode": 0
+  },
+  {
+    "check": "static RTL audit",
+    "status": "PASS",
+    "returncode": 0
+  },
+  {
+    "check": "formal flow source audit",
+    "status": "PASS",
+    "returncode": 0
+  },
+  {
+    "check": "EDA/CI tool flow audit",
+    "status": "PASS",
+    "returncode": 0
+  },
+  {
+    "check": "RTL simulation",
+    "status": "TOOL UNAVAILABLE",
+    "returncode": 2
+  },
+  {
+    "check": "RTL functional coverage",
+    "status": "TOOL UNAVAILABLE",
+    "returncode": 2
+  },
+  {
+    "check": "RTL performance compare",
+    "status": "TOOL UNAVAILABLE",
+    "returncode": 2
+  },
+  {
+    "check": "Verilator lint",
+    "status": "TOOL UNAVAILABLE",
+    "returncode": 2
+  },
+  {
+    "check": "formal",
+    "status": "TOOL UNAVAILABLE",
+    "returncode": 2
+  },
+  {
+    "check": "Yosys synthesis",
+    "status": "TOOL UNAVAILABLE",
+    "returncode": 2
+  }
+]

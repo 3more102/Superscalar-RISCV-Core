@@ -1,0 +1,13 @@
+{
+  "trap": "breakpoint",
+  "trap_pc": "0x0000001c",
+  "commits": 7,
+  "regs": {
+    "x1": "0xffffffff",
+    "x2": "0x00000002",
+    "x3": "0x7fffffff",
+    "x4": "0x00000001",
+    "x6": "0xffffffff",
+    "x7": "0xffffffff"
+  }
+}

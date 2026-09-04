@@ -1,0 +1,21 @@
+STATIC RTL SOURCE AUDIT (not a compiler/linter)
+
+Files inspected: 13
+RTL files: 10
+TB/assertion files: 3
+Issues: 0
+
+Per-file stats:
+rtl/branch/branch_unit.sv: lines=19 always_ff=0 always_comb=1
+rtl/common/riscv_pkg.sv: lines=97 always_ff=0 always_comb=0
+rtl/core/register_file.sv: lines=43 always_ff=1 always_comb=1
+rtl/core/superscalar_core.sv: lines=765 always_ff=4 always_comb=8
+rtl/decode/decoder.sv: lines=205 always_ff=0 always_comb=1
+rtl/execute/alu.sv: lines=24 always_ff=0 always_comb=1
+rtl/issue/dual_issue_unit.sv: lines=45 always_ff=0 always_comb=1
+rtl/mdu/div_unit.sv: lines=156 always_ff=1 always_comb=1
+rtl/mdu/mul_unit.sv: lines=29 always_ff=0 always_comb=1
+rtl/memory/load_store_unit.sv: lines=52 always_ff=0 always_comb=1
+tb/assertions/core_assertions.sv: lines=53 always_ff=1 always_comb=0
+tb/memory/memory_model.sv: lines=53 always_ff=1 always_comb=1
+tb/tb_superscalar_core.sv: lines=115 always_ff=0 always_comb=0

@@ -1,0 +1,2 @@
+ASIC MAPPED SYNTHESIS: NOT RUN — LIBERTY_FILE was not supplied.
+No cell area/count or timing number is claimed.

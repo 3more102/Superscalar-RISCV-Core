@@ -1,0 +1,145 @@
+{
+  "label": "REFERENCE/STIMULUS COVERAGE \u2014 not RTL simulator functional/code coverage",
+  "programs": 41,
+  "branch_outcomes": {
+    "BEQ": {
+      "taken": 4,
+      "not_taken": 1
+    },
+    "BNE": {
+      "taken": 1,
+      "not_taken": 3
+    },
+    "BLT": {
+      "taken": 7,
+      "not_taken": 2
+    },
+    "BGE": {
+      "taken": 2,
+      "not_taken": 1
+    },
+    "BLTU": {
+      "taken": 1,
+      "not_taken": 3
+    },
+    "BGEU": {
+      "taken": 2,
+      "not_taken": 1
+    }
+  },
+  "loads": {
+    "LB": 3,
+    "LH": 2,
+    "LW": 5,
+    "LBU": 3,
+    "LHU": 2
+  },
+  "stores": {
+    "SB": 6,
+    "SH": 3,
+    "SW": 6
+  },
+  "store_lanes": {
+    "SB_lane0": 2,
+    "SB_lane1": 2,
+    "SB_lane2": 1,
+    "SB_lane3": 1,
+    "SH_lane0": 1,
+    "SH_lane2": 2
+  },
+  "m_ops": {
+    "MUL": 5,
+    "MULH": 3,
+    "MULHSU": 3,
+    "MULHU": 3,
+    "DIV": 4,
+    "DIVU": 3,
+    "REM": 4,
+    "REMU": 3
+  },
+  "traps": {
+    "instruction_misaligned": 3,
+    "breakpoint": 26,
+    "illegal": 9,
+    "load_misaligned": 1,
+    "store_misaligned": 1,
+    "ecall": 1
+  },
+  "issue_model_events": {
+    "dual_issue": 59,
+    "raw_block": 42,
+    "waw_block": 1,
+    "structural_block": 119,
+    "load_use_stall": 1,
+    "divider_stall": 126,
+    "redirect_bubble": 40
+  },
+  "illegal_reserved_encodings": {
+    "jalr_funct3": true,
+    "branch_funct3": true,
+    "load_funct3": true,
+    "store_funct3": true,
+    "shift_encoding": true,
+    "op_encoding": true,
+    "system": true
+  },
+  "checks": {
+    "BEQ_taken": true,
+    "BEQ_not_taken": true,
+    "BNE_taken": true,
+    "BNE_not_taken": true,
+    "BLT_taken": true,
+    "BLT_not_taken": true,
+    "BGE_taken": true,
+    "BGE_not_taken": true,
+    "BLTU_taken": true,
+    "BLTU_not_taken": true,
+    "BGEU_taken": true,
+    "BGEU_not_taken": true,
+    "load_LB": true,
+    "load_LH": true,
+    "load_LW": true,
+    "load_LBU": true,
+    "load_LHU": true,
+    "store_SB": true,
+    "store_SH": true,
+    "store_SW": true,
+    "store_lane_SB_lane0": true,
+    "store_lane_SB_lane1": true,
+    "store_lane_SB_lane2": true,
+    "store_lane_SB_lane3": true,
+    "store_lane_SH_lane0": true,
+    "store_lane_SH_lane2": true,
+    "m_MUL": true,
+    "m_MULH": true,
+    "m_MULHSU": true,
+    "m_MULHU": true,
+    "m_DIV": true,
+    "m_DIVU": true,
+    "m_REM": true,
+    "m_REMU": true,
+    "trap_instruction_misaligned": true,
+    "trap_breakpoint": true,
+    "trap_illegal": true,
+    "trap_load_misaligned": true,
+    "trap_store_misaligned": true,
+    "trap_ecall": true,
+    "issue_dual_issue": true,
+    "issue_raw_block": true,
+    "issue_waw_block": true,
+    "issue_structural_block": true,
+    "issue_load_use_stall": true,
+    "issue_divider_stall": true,
+    "issue_redirect_bubble": true,
+    "illegal_jalr_funct3": true,
+    "illegal_branch_funct3": true,
+    "illegal_load_funct3": true,
+    "illegal_store_funct3": true,
+    "illegal_shift_encoding": true,
+    "illegal_op_encoding": true,
+    "illegal_system": true
+  },
+  "covered_points": 54,
+  "total_points": 54,
+  "all_required_points_covered": true
+}

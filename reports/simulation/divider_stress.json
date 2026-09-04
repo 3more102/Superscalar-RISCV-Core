@@ -1,0 +1,7 @@
+{
+  "operand_pairs": 5000,
+  "operations_per_pair": 4,
+  "comparisons": 20000,
+  "seed": "0x5EED",
+  "status": "PASS"
+}

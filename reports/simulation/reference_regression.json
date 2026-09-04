@@ -1,0 +1,26 @@
+{
+  "directed_pass": 41,
+  "directed_total": 41,
+  "random_pass": 500,
+  "random_total": 500,
+  "directed_commits": 280,
+  "random_commits": 47000,
+  "reference_commits_checked": 47280,
+  "failures": [],
+  "issue_model": {
+    "independent": {
+      "instructions": 200,
+      "issue_cycles": 100,
+      "dual_cycles": 100,
+      "single_cycles": 0,
+      "issue_ipc": 2.0
+    },
+    "dependency_chain": {
+      "instructions": 100,
+      "issue_cycles": 100,
+      "dual_cycles": 0,
+      "single_cycles": 100,
+      "issue_ipc": 1.0
+    }
+  }
+}

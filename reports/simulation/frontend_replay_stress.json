@@ -1,0 +1,10 @@
+{
+  "cycles": 100000,
+  "issued_instructions": 126494,
+  "dual_issue_cycles": 44914,
+  "single_issue_cycles": 36666,
+  "redirects": 208,
+  "idle_or_refill_cycles": 18212,
+  "seed": "0xC0FFEE",
+  "status": "PASS"
+}

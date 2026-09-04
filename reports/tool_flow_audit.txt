@@ -1,0 +1,13 @@
+EDA/CI TOOL FLOW SOURCE AUDIT (not EDA execution)
+
+Issues: 0
+tools/bootstrap_eda.sh: bash syntax PASS
+tools/env_eda.sh: bash syntax PASS
+Makefile: markers checked=2
+.github/workflows/rtl-ci.yml: markers checked=10
+tools/bootstrap_eda.sh: markers checked=3
+tools/bootstrap_eda.ps1: markers checked=3
+tools/run_full_verification.ps1: markers checked=5
+scripts/run_formal.py: markers checked=2
+formal/core.sby: markers checked=3
+scripts/run_asic_timing.py: markers checked=5

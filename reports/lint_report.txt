@@ -1,0 +1,2 @@
+VERILATOR LINT: TOOL UNAVAILABLE
+See reports/static_rtl_audit.txt for the non-compiler source audit.

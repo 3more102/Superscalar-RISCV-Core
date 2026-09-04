@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+.pytest_cache/
+*.pyc
+.venv/
+venv/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Simulation outputs
+sim/*.vvp
+sim/*.vcd
+sim/*.fst
+sim/obj_dir/
+sim/generated_random/
+sim/obj_perf_*/
+sim/perf_*.vvp
+
+# Generated detailed traces/coverage databases
+reports/simulation/*_trace.csv
+reports/coverage/*_coverage.txt
+coverage.dat
+*.ucdb
+
+# Temporary build/log files
+build/
+*.log.tmp
+
+# Local EDA toolchain archives/installations
+tools/oss-cad-suite/
+tools/*.tgz
+tools/*.tar.gz

@@ -1,0 +1,1 @@
+TIMING: NOT RUN — no synthesis tool/characterized Liberty library available in this environment.

@@ -1,0 +1,19 @@
+{
+  "trap": "breakpoint",
+  "trap_pc": "0x00000040",
+  "commits": 16,
+  "regs": {
+    "x1": "0x00000100",
+    "x2": "0xffffffff",
+    "x3": "0xffffffff",
+    "x4": "0x0000007f",
+    "x5": "0x0000007f",
+    "x6": "0x0000007f",
+    "x7": "0xffffff80",
+    "x8": "0xffffff80",
+    "x9": "0x00000080",
+    "x10": "0xfffffffe",
+    "x11": "0xfffffffe",
+    "x12": "0x0000fffe"
+  }
+}

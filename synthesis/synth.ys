@@ -1,0 +1,21 @@
+read_verilog -sv rtl/common/riscv_pkg.sv
+read_verilog -sv rtl/decode/decoder.sv
+read_verilog -sv rtl/execute/alu.sv
+read_verilog -sv rtl/branch/branch_unit.sv
+read_verilog -sv rtl/core/register_file.sv
+read_verilog -sv rtl/issue/dual_issue_unit.sv
+read_verilog -sv rtl/mdu/mul_unit.sv
+read_verilog -sv rtl/mdu/div_unit.sv
+read_verilog -sv rtl/memory/load_store_unit.sv
+read_verilog -sv rtl/core/superscalar_core.sv
+hierarchy -check -top superscalar_core
+proc
+opt
+fsm
+opt
+memory
+opt
+techmap
+opt
+stat
+check

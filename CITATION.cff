@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this project in academic or engineering work, please cite the repository."
+title: "2-Wide Superscalar RV32IM RISC-V Processor Core"
+type: software
+authors:
+  - family-names: "Islam"
+    given-names: "Omar"
+version: 0.2.0
+date-released: 2026-09-04
+repository-code: "https://github.com/3more102/Superscalar-RISCV-Core"
+license: MIT
+keywords:
+  - RISC-V
+  - RV32IM
+  - superscalar
+  - SystemVerilog
+  - RTL
+  - CPU microarchitecture
+  - formal verification
+  - ASIC

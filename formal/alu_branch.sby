@@ -1,0 +1,16 @@
+[options]
+mode prove
+depth 1
+
+[engines]
+smtbmc
+
+[script]
+plugin -i slang
+read_slang rtl/common/riscv_pkg.sv rtl/execute/alu.sv rtl/branch/branch_unit.sv formal/alu_branch_harness.sv --top alu_branch_harness
+prep -top alu_branch_harness
+[files]
+rtl/common/riscv_pkg.sv
+rtl/execute/alu.sv
+rtl/branch/branch_unit.sv
+formal/alu_branch_harness.sv

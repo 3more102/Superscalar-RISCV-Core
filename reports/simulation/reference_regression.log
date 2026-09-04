@@ -1,0 +1,45 @@
+01_alu                       PASS commits=23 trap=breakpoint pc=0x0000005c expected=breakpoint@0x0000005c
+02_dual_issue                PASS commits=10 trap=breakpoint pc=0x00000028 expected=breakpoint@0x00000028
+03_dependencies              PASS commits=7 trap=breakpoint pc=0x0000001c expected=breakpoint@0x0000001c
+04_forwarding                PASS commits=8 trap=breakpoint pc=0x00000020 expected=breakpoint@0x00000020
+05_branches                  PASS commits=14 trap=breakpoint pc=0x00000048 expected=breakpoint@0x00000048
+06_jumps                     PASS commits=6 trap=breakpoint pc=0x0000001c expected=breakpoint@0x0000001c
+07_load_store                PASS commits=16 trap=breakpoint pc=0x00000040 expected=breakpoint@0x00000040
+08_mul                       PASS commits=6 trap=breakpoint pc=0x00000018 expected=breakpoint@0x00000018
+09_div                       PASS commits=13 trap=breakpoint pc=0x00000034 expected=breakpoint@0x00000034
+10_random_mix                PASS commits=13 trap=breakpoint pc=0x00000034 expected=breakpoint@0x00000034
+11_stress_dependencies       PASS commits=10 trap=breakpoint pc=0x00000028 expected=breakpoint@0x00000028
+12_branch_flush              PASS commits=15 trap=breakpoint pc=0x00000020 expected=breakpoint@0x00000020
+13_waw_pairing               PASS commits=4 trap=breakpoint pc=0x00000010 expected=breakpoint@0x00000010
+14_x0_invariant              PASS commits=5 trap=breakpoint pc=0x00000014 expected=breakpoint@0x00000014
+15_misaligned_load           PASS commits=1 trap=load_misaligned pc=0x00000004 expected=load_misaligned@0x00000004
+16_misaligned_store          PASS commits=2 trap=store_misaligned pc=0x00000008 expected=store_misaligned@0x00000008
+17_ecall                     PASS commits=1 trap=ecall pc=0x00000004 expected=ecall@0x00000004
+18_illegal                   PASS commits=1 trap=illegal pc=0x00000004 expected=illegal@0x00000004
+19_structural_replay         PASS commits=10 trap=breakpoint pc=0x0000002c expected=breakpoint@0x0000002c
+20_div_corner_unsigned       PASS commits=7 trap=breakpoint pc=0x0000001c expected=breakpoint@0x0000001c
+21_branch_outcomes           PASS commits=32 trap=breakpoint pc=0x00000098 expected=breakpoint@0x00000098
+22_forwarding_paths          PASS commits=9 trap=breakpoint pc=0x00000024 expected=breakpoint@0x00000024
+23_misaligned_jal            PASS commits=0 trap=instruction_misaligned pc=0x00000000 expected=instruction_misaligned@0x00000000
+24_misaligned_jalr           PASS commits=1 trap=instruction_misaligned pc=0x00000004 expected=instruction_misaligned@0x00000004
+25_misaligned_branch         PASS commits=1 trap=instruction_misaligned pc=0x00000004 expected=instruction_misaligned@0x00000004
+26_precise_trap              PASS commits=2 trap=illegal pc=0x00000008 expected=illegal@0x00000008
+27_illegal_jalr_funct3       PASS commits=0 trap=illegal pc=0x00000000 expected=illegal@0x00000000
+28_illegal_branch_funct3     PASS commits=0 trap=illegal pc=0x00000000 expected=illegal@0x00000000
+29_illegal_load_funct3       PASS commits=0 trap=illegal pc=0x00000000 expected=illegal@0x00000000
+30_illegal_store_funct3      PASS commits=0 trap=illegal pc=0x00000000 expected=illegal@0x00000000
+31_illegal_shift_encoding    PASS commits=0 trap=illegal pc=0x00000000 expected=illegal@0x00000000
+32_illegal_op_encoding       PASS commits=0 trap=illegal pc=0x00000000 expected=illegal@0x00000000
+33_illegal_system            PASS commits=0 trap=illegal pc=0x00000000 expected=illegal@0x00000000
+34_not_taken_misaligned_branch PASS commits=3 trap=breakpoint pc=0x0000000c expected=breakpoint@0x0000000c
+35_jalr_bit0_clear           PASS commits=3 trap=breakpoint pc=0x00000010 expected=breakpoint@0x00000010
+36_overflow_wrap             PASS commits=6 trap=breakpoint pc=0x00000018 expected=breakpoint@0x00000018
+37_shift_mask                PASS commits=9 trap=breakpoint pc=0x00000024 expected=breakpoint@0x00000024
+38_signed_unsigned_extremes  PASS commits=11 trap=breakpoint pc=0x00000030 expected=breakpoint@0x00000030
+39_byte_lanes                PASS commits=12 trap=breakpoint pc=0x00000030 expected=breakpoint@0x00000030
+40_halfword_upper_lane       PASS commits=9 trap=breakpoint pc=0x00000024 expected=breakpoint@0x00000024
+41_mul_corners               PASS commits=10 trap=breakpoint pc=0x00000028 expected=breakpoint@0x00000028
+RANDOM REFERENCE SEEDS       500/500 PASS
+REFERENCE COMMITS CHECKED    47280
+ISSUE MODEL independent      IPC=2.000 dual_cycles=100
+ISSUE MODEL dependency-chain IPC=1.000 dual_cycles=0

@@ -1,0 +1,461 @@
+Platform: Linux-6.18.35-x86_64-with-glibc2.41
+Python runtime: 3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]
+
+iverilog: TOOL UNAVAILABLE
+vvp: TOOL UNAVAILABLE
+verilator: TOOL UNAVAILABLE
+yosys: TOOL UNAVAILABLE
+sby: TOOL UNAVAILABLE
+yosys-smtbmc: TOOL UNAVAILABLE
+sta: TOOL UNAVAILABLE
+opensta: TOOL UNAVAILABLE
+gtkwave: TOOL UNAVAILABLE
+riscv32-unknown-elf-gcc: TOOL UNAVAILABLE
+riscv64-unknown-elf-gcc: TOOL UNAVAILABLE
+python3: /opt/pyvenv/bin/python3 | Python 3.13.5
+make: /usr/bin/make | GNU Make 4.4.1
+git: /usr/bin/git | git version 2.47.3
+Generated 41 directed programs in /mnt/data/Superscalar_RISCV_Core/sw/hex
+{
+  "01_alu": {
+    "commits": 23,
+    "trap": "breakpoint"
+  },
+  "02_dual_issue": {
+    "commits": 10,
+    "trap": "breakpoint"
+  },
+  "03_dependencies": {
+    "commits": 7,
+    "trap": "breakpoint"
+  },
+  "04_forwarding": {
+    "commits": 8,
+    "trap": "breakpoint"
+  },
+  "05_branches": {
+    "commits": 14,
+    "trap": "breakpoint"
+  },
+  "06_jumps": {
+    "commits": 6,
+    "trap": "breakpoint"
+  },
+  "07_load_store": {
+    "commits": 16,
+    "trap": "breakpoint"
+  },
+  "08_mul": {
+    "commits": 6,
+    "trap": "breakpoint"
+  },
+  "09_div": {
+    "commits": 13,
+    "trap": "breakpoint"
+  },
+  "10_random_mix": {
+    "commits": 13,
+    "trap": "breakpoint"
+  },
+  "11_stress_dependencies": {
+    "commits": 10,
+    "trap": "breakpoint"
+  },
+  "12_branch_flush": {
+    "commits": 15,
+    "trap": "breakpoint"
+  },
+  "13_waw_pairing": {
+    "commits": 4,
+    "trap": "breakpoint"
+  },
+  "14_x0_invariant": {
+    "commits": 5,
+    "trap": "breakpoint"
+  },
+  "15_misaligned_load": {
+    "commits": 1,
+    "trap": "load_misaligned"
+  },
+  "16_misaligned_store": {
+    "commits": 2,
+    "trap": "store_misaligned"
+  },
+  "17_ecall": {
+    "commits": 1,
+    "trap": "ecall"
+  },
+  "18_illegal": {
+    "commits": 1,
+    "trap": "illegal"
+  },
+  "19_structural_replay": {
+    "commits": 10,
+    "trap": "breakpoint"
+  },
+  "20_div_corner_unsigned": {
+    "commits": 7,
+    "trap": "breakpoint"
+  },
+  "21_branch_outcomes": {
+    "commits": 32,
+    "trap": "breakpoint"
+  },
+  "22_forwarding_paths": {
+    "commits": 9,
+    "trap": "breakpoint"
+  },
+  "23_misaligned_jal": {
+    "commits": 0,
+    "trap": "instruction_misaligned"
+  },
+  "24_misaligned_jalr": {
+    "commits": 1,
+    "trap": "instruction_misaligned"
+  },
+  "25_misaligned_branch": {
+    "commits": 1,
+    "trap": "instruction_misaligned"
+  },
+  "26_precise_trap": {
+    "commits": 2,
+    "trap": "illegal"
+  },
+  "27_illegal_jalr_funct3": {
+    "commits": 0,
+    "trap": "illegal"
+  },
+  "28_illegal_branch_funct3": {
+    "commits": 0,
+    "trap": "illegal"
+  },
+  "29_illegal_load_funct3": {
+    "commits": 0,
+    "trap": "illegal"
+  },
+  "30_illegal_store_funct3": {
+    "commits": 0,
+    "trap": "illegal"
+  },
+  "31_illegal_shift_encoding": {
+    "commits": 0,
+    "trap": "illegal"
+  },
+  "32_illegal_op_encoding": {
+    "commits": 0,
+    "trap": "illegal"
+  },
+  "33_illegal_system": {
+    "commits": 0,
+    "trap": "illegal"
+  },
+  "34_not_taken_misaligned_branch": {
+    "commits": 3,
+    "trap": "breakpoint"
+  },
+  "35_jalr_bit0_clear": {
+    "commits": 3,
+    "trap": "breakpoint"
+  },
+  "36_overflow_wrap": {
+    "commits": 6,
+    "trap": "breakpoint"
+  },
+  "37_shift_mask": {
+    "commits": 9,
+    "trap": "breakpoint"
+  },
+  "38_signed_unsigned_extremes": {
+    "commits": 11,
+    "trap": "breakpoint"
+  },
+  "39_byte_lanes": {
+    "commits": 12,
+    "trap": "breakpoint"
+  },
+  "40_halfword_upper_lane": {
+    "commits": 9,
+    "trap": "breakpoint"
+  },
+  "41_mul_corners": {
+    "commits": 10,
+    "trap": "breakpoint"
+  }
+}
+01_alu                       PASS commits=23 trap=breakpoint pc=0x0000005c expected=breakpoint@0x0000005c
+02_dual_issue                PASS commits=10 trap=breakpoint pc=0x00000028 expected=breakpoint@0x00000028
+03_dependencies              PASS commits=7 trap=breakpoint pc=0x0000001c expected=breakpoint@0x0000001c
+04_forwarding                PASS commits=8 trap=breakpoint pc=0x00000020 expected=breakpoint@0x00000020
+05_branches                  PASS commits=14 trap=breakpoint pc=0x00000048 expected=breakpoint@0x00000048
+06_jumps                     PASS commits=6 trap=breakpoint pc=0x0000001c expected=breakpoint@0x0000001c
+07_load_store                PASS commits=16 trap=breakpoint pc=0x00000040 expected=breakpoint@0x00000040
+08_mul                       PASS commits=6 trap=breakpoint pc=0x00000018 expected=breakpoint@0x00000018
+09_div                       PASS commits=13 trap=breakpoint pc=0x00000034 expected=breakpoint@0x00000034
+10_random_mix                PASS commits=13 trap=breakpoint pc=0x00000034 expected=breakpoint@0x00000034
+11_stress_dependencies       PASS commits=10 trap=breakpoint pc=0x00000028 expected=breakpoint@0x00000028
+12_branch_flush              PASS commits=15 trap=breakpoint pc=0x00000020 expected=breakpoint@0x00000020
+13_waw_pairing               PASS commits=4 trap=breakpoint pc=0x00000010 expected=breakpoint@0x00000010
+14_x0_invariant              PASS commits=5 trap=breakpoint pc=0x00000014 expected=breakpoint@0x00000014
+15_misaligned_load           PASS commits=1 trap=load_misaligned pc=0x00000004 expected=load_misaligned@0x00000004
+16_misaligned_store          PASS commits=2 trap=store_misaligned pc=0x00000008 expected=store_misaligned@0x00000008
+17_ecall                     PASS commits=1 trap=ecall pc=0x00000004 expected=ecall@0x00000004
+18_illegal                   PASS commits=1 trap=illegal pc=0x00000004 expected=illegal@0x00000004
+19_structural_replay         PASS commits=10 trap=breakpoint pc=0x0000002c expected=breakpoint@0x0000002c
+20_div_corner_unsigned       PASS commits=7 trap=breakpoint pc=0x0000001c expected=breakpoint@0x0000001c
+21_branch_outcomes           PASS commits=32 trap=breakpoint pc=0x00000098 expected=breakpoint@0x00000098
+22_forwarding_paths          PASS commits=9 trap=breakpoint pc=0x00000024 expected=breakpoint@0x00000024
+23_misaligned_jal            PASS commits=0 trap=instruction_misaligned pc=0x00000000 expected=instruction_misaligned@0x00000000
+24_misaligned_jalr           PASS commits=1 trap=instruction_misaligned pc=0x00000004 expected=instruction_misaligned@0x00000004
+25_misaligned_branch         PASS commits=1 trap=instruction_misaligned pc=0x00000004 expected=instruction_misaligned@0x00000004
+26_precise_trap              PASS commits=2 trap=illegal pc=0x00000008 expected=illegal@0x00000008
+27_illegal_jalr_funct3       PASS commits=0 trap=illegal pc=0x00000000 expected=illegal@0x00000000
+28_illegal_branch_funct3     PASS commits=0 trap=illegal pc=0x00000000 expected=illegal@0x00000000
+29_illegal_load_funct3       PASS commits=0 trap=illegal pc=0x00000000 expected=illegal@0x00000000
+30_illegal_store_funct3      PASS commits=0 trap=illegal pc=0x00000000 expected=illegal@0x00000000
+31_illegal_shift_encoding    PASS commits=0 trap=illegal pc=0x00000000 expected=illegal@0x00000000
+32_illegal_op_encoding       PASS commits=0 trap=illegal pc=0x00000000 expected=illegal@0x00000000
+33_illegal_system            PASS commits=0 trap=illegal pc=0x00000000 expected=illegal@0x00000000
+34_not_taken_misaligned_branch PASS commits=3 trap=breakpoint pc=0x0000000c expected=breakpoint@0x0000000c
+35_jalr_bit0_clear           PASS commits=3 trap=breakpoint pc=0x00000010 expected=breakpoint@0x00000010
+36_overflow_wrap             PASS commits=6 trap=breakpoint pc=0x00000018 expected=breakpoint@0x00000018
+37_shift_mask                PASS commits=9 trap=breakpoint pc=0x00000024 expected=breakpoint@0x00000024
+38_signed_unsigned_extremes  PASS commits=11 trap=breakpoint pc=0x00000030 expected=breakpoint@0x00000030
+39_byte_lanes                PASS commits=12 trap=breakpoint pc=0x00000030 expected=breakpoint@0x00000030
+40_halfword_upper_lane       PASS commits=9 trap=breakpoint pc=0x00000024 expected=breakpoint@0x00000024
+41_mul_corners               PASS commits=10 trap=breakpoint pc=0x00000028 expected=breakpoint@0x00000028
+RANDOM REFERENCE SEEDS       500/500 PASS
+REFERENCE COMMITS CHECKED    47280
+ISSUE MODEL independent      IPC=2.000 dual_cycles=100
+ISSUE MODEL dependency-chain IPC=1.000 dual_cycles=0
+01_alu                       retired=  23 single=  28 dual=  17 speedup=1.647x IPC=1.353
+02_dual_issue                retired=  10 single=  15 dual=  10 speedup=1.500x IPC=1.000
+03_dependencies              retired=   7 single=  12 dual=  11 speedup=1.091x IPC=0.636
+04_forwarding                retired=   8 single=  13 dual=   9 speedup=1.444x IPC=0.889
+05_branches                  retired=  14 single=  27 dual=  26 speedup=1.038x IPC=0.538
+06_jumps                     retired=   6 single=  15 dual=  14 speedup=1.071x IPC=0.429
+07_load_store                retired=  16 single=  21 dual=  20 speedup=1.050x IPC=0.800
+08_mul                       retired=   6 single=  11 dual=  10 speedup=1.100x IPC=0.600
+09_div                       retired=  13 single=  90 dual=  88 speedup=1.023x IPC=0.148
+10_random_mix                retired=  13 single=  37 dual=  34 speedup=1.088x IPC=0.382
+11_stress_dependencies       retired=  10 single=  15 dual=  14 speedup=1.071x IPC=0.714
+12_branch_flush              retired=  15 single=  30 dual=  29 speedup=1.034x IPC=0.517
+13_waw_pairing               retired=   4 single=   9 dual=   8 speedup=1.125x IPC=0.500
+14_x0_invariant              retired=   5 single=  10 dual=   8 speedup=1.250x IPC=0.625
+15_misaligned_load           retired=   1 single=   6 dual=   6 speedup=1.000x IPC=0.167
+16_misaligned_store          retired=   2 single=   7 dual=   6 speedup=1.167x IPC=0.333
+17_ecall                     retired=   1 single=   6 dual=   6 speedup=1.000x IPC=0.167
+18_illegal                   retired=   1 single=   6 dual=   6 speedup=1.000x IPC=0.167
+19_structural_replay         retired=  10 single=  17 dual=  16 speedup=1.062x IPC=0.625
+20_div_corner_unsigned       retired=   7 single=  48 dual=  47 speedup=1.021x IPC=0.149
+21_branch_outcomes           retired=  32 single=  49 dual=  42 speedup=1.167x IPC=0.762
+22_forwarding_paths          retired=   9 single=  14 dual=  12 speedup=1.167x IPC=0.750
+23_misaligned_jal            retired=   0 single=   5 dual=   5 speedup=1.000x IPC=0.000
+24_misaligned_jalr           retired=   1 single=   6 dual=   6 speedup=1.000x IPC=0.167
+25_misaligned_branch         retired=   1 single=   6 dual=   6 speedup=1.000x IPC=0.167
+26_precise_trap              retired=   2 single=   7 dual=   6 speedup=1.167x IPC=0.333
+27_illegal_jalr_funct3       retired=   0 single=   5 dual=   5 speedup=1.000x IPC=0.000
+28_illegal_branch_funct3     retired=   0 single=   5 dual=   5 speedup=1.000x IPC=0.000
+29_illegal_load_funct3       retired=   0 single=   5 dual=   5 speedup=1.000x IPC=0.000
+30_illegal_store_funct3      retired=   0 single=   5 dual=   5 speedup=1.000x IPC=0.000
+31_illegal_shift_encoding    retired=   0 single=   5 dual=   5 speedup=1.000x IPC=0.000
+32_illegal_op_encoding       retired=   0 single=   5 dual=   5 speedup=1.000x IPC=0.000
+33_illegal_system            retired=   0 single=   5 dual=   5 speedup=1.000x IPC=0.000
+34_not_taken_misaligned_branch retired=   3 single=   8 dual=   8 speedup=1.000x IPC=0.375
+35_jalr_bit0_clear           retired=   3 single=  10 dual=  10 speedup=1.000x IPC=0.300
+36_overflow_wrap             retired=   6 single=  11 dual=  10 speedup=1.100x IPC=0.600
+37_shift_mask                retired=   9 single=  14 dual=  10 speedup=1.400x IPC=0.900
+38_signed_unsigned_extremes  retired=  11 single=  18 dual=  15 speedup=1.200x IPC=0.733
+39_byte_lanes                retired=  12 single=  17 dual=  16 speedup=1.062x IPC=0.750
+40_halfword_upper_lane       retired=   9 single=  14 dual=  13 speedup=1.077x IPC=0.692
+41_mul_corners               retired=  10 single=  15 dual=  14 speedup=1.071x IPC=0.714
+RANDOM TIMING MODEL: 500/500 completed, mean IPC=0.615, mean speedup=1.187x
+DIVIDER ALGORITHM STRESS: 20000/20000 PASS
+FRONT-END REPLAY STRESS: 100000/100000 cycles PASS; issued=126494 redirects=208
+.........................                                                [100%]
+25 passed in 0.30s
+REFERENCE ISA COVERAGE: 47/47 required mnemonics exercised
+REFERENCE/STIMULUS FUNCTIONAL COVERAGE: 54/54 points
+BEQ_taken                        COVERED
+BEQ_not_taken                    COVERED
+BNE_taken                        COVERED
+BNE_not_taken                    COVERED
+BLT_taken                        COVERED
+BLT_not_taken                    COVERED
+BGE_taken                        COVERED
+BGE_not_taken                    COVERED
+BLTU_taken                       COVERED
+BLTU_not_taken                   COVERED
+BGEU_taken                       COVERED
+BGEU_not_taken                   COVERED
+load_LB                          COVERED
+load_LH                          COVERED
+load_LW                          COVERED
+load_LBU                         COVERED
+load_LHU                         COVERED
+store_SB                         COVERED
+store_SH                         COVERED
+store_SW                         COVERED
+store_lane_SB_lane0              COVERED
+store_lane_SB_lane1              COVERED
+store_lane_SB_lane2              COVERED
+store_lane_SB_lane3              COVERED
+store_lane_SH_lane0              COVERED
+store_lane_SH_lane2              COVERED
+m_MUL                            COVERED
+m_MULH                           COVERED
+m_MULHSU                         COVERED
+m_MULHU                          COVERED
+m_DIV                            COVERED
+m_DIVU                           COVERED
+m_REM                            COVERED
+m_REMU                           COVERED
+trap_instruction_misaligned      COVERED
+trap_breakpoint                  COVERED
+trap_illegal                     COVERED
+trap_load_misaligned             COVERED
+trap_store_misaligned            COVERED
+trap_ecall                       COVERED
+issue_dual_issue                 COVERED
+issue_raw_block                  COVERED
+issue_waw_block                  COVERED
+issue_structural_block           COVERED
+issue_load_use_stall             COVERED
+issue_divider_stall              COVERED
+issue_redirect_bubble            COVERED
+illegal_jalr_funct3              COVERED
+illegal_branch_funct3            COVERED
+illegal_load_funct3              COVERED
+illegal_store_funct3             COVERED
+illegal_shift_encoding           COVERED
+illegal_op_encoding              COVERED
+illegal_system                   COVERED
+STATIC RTL SOURCE AUDIT (not a compiler/linter)
+
+Files inspected: 13
+RTL files: 10
+TB/assertion files: 3
+Issues: 0
+
+Per-file stats:
+rtl/branch/branch_unit.sv: lines=19 always_ff=0 always_comb=1
+rtl/common/riscv_pkg.sv: lines=97 always_ff=0 always_comb=0
+rtl/core/register_file.sv: lines=43 always_ff=1 always_comb=1
+rtl/core/superscalar_core.sv: lines=765 always_ff=4 always_comb=8
+rtl/decode/decoder.sv: lines=205 always_ff=0 always_comb=1
+rtl/execute/alu.sv: lines=24 always_ff=0 always_comb=1
+rtl/issue/dual_issue_unit.sv: lines=45 always_ff=0 always_comb=1
+rtl/mdu/div_unit.sv: lines=156 always_ff=1 always_comb=1
+rtl/mdu/mul_unit.sv: lines=29 always_ff=0 always_comb=1
+rtl/memory/load_store_unit.sv: lines=52 always_ff=0 always_comb=1
+tb/assertions/core_assertions.sv: lines=53 always_ff=1 always_comb=0
+tb/memory/memory_model.sv: lines=53 always_ff=1 always_comb=1
+tb/tb_superscalar_core.sv: lines=115 always_ff=0 always_comb=0
+FORMAL FLOW SOURCE AUDIT (not a formal proof)
+
+Targets: 3
+formal/alu_branch.sby: top=alu_branch_harness files=4
+formal/core.sby: top=core_formal_harness files=11
+formal/issue.sby: top=issue_harness files=3
+Issues: 0
+EDA/CI TOOL FLOW SOURCE AUDIT (not EDA execution)
+
+Issues: 0
+tools/bootstrap_eda.sh: bash syntax PASS
+tools/env_eda.sh: bash syntax PASS
+Makefile: markers checked=2
+.github/workflows/rtl-ci.yml: markers checked=3
+tools/bootstrap_eda.sh: markers checked=3
+tools/bootstrap_eda.ps1: markers checked=3
+tools/run_full_verification.ps1: markers checked=5
+scripts/run_formal.py: markers checked=2
+formal/core.sby: markers checked=3
+scripts/run_asic_timing.py: markers checked=5
+RTL SIMULATION: TOOL UNAVAILABLE (requires Verilator or Icarus Verilog)
+RTL FUNCTIONAL COVERAGE: TOOL UNAVAILABLE
+Generated /mnt/data/Superscalar_RISCV_Core/sw/perf/independent_200.hex and /mnt/data/Superscalar_RISCV_Core/sw/perf/dependency_100.hex
+# RTL Performance Comparison
+
+RTL PERFORMANCE: TOOL UNAVAILABLE (requires Verilator or Icarus).
+STATIC RTL SOURCE AUDIT (not a compiler/linter)
+
+Files inspected: 13
+RTL files: 10
+TB/assertion files: 3
+Issues: 0
+
+Per-file stats:
+rtl/branch/branch_unit.sv: lines=19 always_ff=0 always_comb=1
+rtl/common/riscv_pkg.sv: lines=97 always_ff=0 always_comb=0
+rtl/core/register_file.sv: lines=43 always_ff=1 always_comb=1
+rtl/core/superscalar_core.sv: lines=765 always_ff=4 always_comb=8
+rtl/decode/decoder.sv: lines=205 always_ff=0 always_comb=1
+rtl/execute/alu.sv: lines=24 always_ff=0 always_comb=1
+rtl/issue/dual_issue_unit.sv: lines=45 always_ff=0 always_comb=1
+rtl/mdu/div_unit.sv: lines=156 always_ff=1 always_comb=1
+rtl/mdu/mul_unit.sv: lines=29 always_ff=0 always_comb=1
+rtl/memory/load_store_unit.sv: lines=52 always_ff=0 always_comb=1
+tb/assertions/core_assertions.sv: lines=53 always_ff=1 always_comb=0
+tb/memory/memory_model.sv: lines=53 always_ff=1 always_comb=1
+tb/tb_superscalar_core.sv: lines=115 always_ff=0 always_comb=0
+VERILATOR LINT: TOOL UNAVAILABLE
+See reports/static_rtl_audit.txt for the non-compiler source audit.
+FORMAL: TOOL UNAVAILABLE (requires sby and yosys).
+Formal harnesses are present under formal/.
+YOSYS SYNTHESIS: TOOL UNAVAILABLE
+No cell count, area, or timing number is claimed.
+
+=== tool detection ===
+
+=== directed generation ===
+
+=== reference regression ===
+
+=== microarchitecture model ===
+
+=== divider algorithm stress ===
+
+=== front-end replay stress ===
+
+=== pytest Python models ===
+
+=== required ISA exercise ===
+
+=== reference stimulus coverage ===
+
+=== static RTL audit ===
+
+=== formal flow source audit ===
+
+=== EDA/CI tool flow audit ===
+
+=== RTL simulation ===
+
+=== RTL functional coverage ===
+
+=== RTL performance compare ===
+
+=== Verilator lint ===
+
+=== formal ===
+
+=== Yosys synthesis ===
+
+=== ALL CHECKS SUMMARY ===
+tool detection               PASS
+directed generation          PASS
+reference regression         PASS
+microarchitecture model      PASS
+divider algorithm stress     PASS
+front-end replay stress      PASS
+pytest Python models         PASS
+required ISA exercise        PASS
+reference stimulus coverage  PASS
+static RTL audit             PASS
+formal flow source audit     PASS
+EDA/CI tool flow audit       PASS
+RTL simulation               FAIL (REQUIRED TOOL UNAVAILABLE)
+RTL functional coverage      FAIL (REQUIRED TOOL UNAVAILABLE)
+RTL performance compare      FAIL (REQUIRED TOOL UNAVAILABLE)
+Verilator lint               FAIL (REQUIRED TOOL UNAVAILABLE)
+formal                       FAIL (REQUIRED TOOL UNAVAILABLE)
+Yosys synthesis              FAIL (REQUIRED TOOL UNAVAILABLE)

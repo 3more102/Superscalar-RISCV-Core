@@ -1,0 +1,10 @@
+rtl/common/riscv_pkg.sv
+rtl/decode/decoder.sv
+rtl/execute/alu.sv
+rtl/branch/branch_unit.sv
+rtl/core/register_file.sv
+rtl/issue/dual_issue_unit.sv
+rtl/mdu/mul_unit.sv
+rtl/mdu/div_unit.sv
+rtl/memory/load_store_unit.sv
+rtl/core/superscalar_core.sv

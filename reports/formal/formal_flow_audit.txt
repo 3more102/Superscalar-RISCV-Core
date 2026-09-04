@@ -1,0 +1,7 @@
+FORMAL FLOW SOURCE AUDIT (not a formal proof)
+
+Targets: 3
+formal/alu_branch.sby: top=alu_branch_harness files=4
+formal/core.sby: top=core_formal_harness files=11
+formal/issue.sby: top=issue_harness files=3
+Issues: 0

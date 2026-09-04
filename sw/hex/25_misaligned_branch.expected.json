@@ -1,0 +1,8 @@
+{
+  "trap": "instruction_misaligned",
+  "trap_pc": "0x00000004",
+  "commits": 1,
+  "regs": {
+    "x1": "0x00000001"
+  }
+}

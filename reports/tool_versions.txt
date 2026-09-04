@@ -1,0 +1,17 @@
+Platform: Linux-6.18.35-x86_64-with-glibc2.41
+Python runtime: 3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]
+
+iverilog: TOOL UNAVAILABLE
+vvp: TOOL UNAVAILABLE
+verilator: TOOL UNAVAILABLE
+yosys: TOOL UNAVAILABLE
+sby: TOOL UNAVAILABLE
+yosys-smtbmc: TOOL UNAVAILABLE
+sta: TOOL UNAVAILABLE
+opensta: TOOL UNAVAILABLE
+gtkwave: TOOL UNAVAILABLE
+riscv32-unknown-elf-gcc: TOOL UNAVAILABLE
+riscv64-unknown-elf-gcc: TOOL UNAVAILABLE
+python3: /opt/pyvenv/bin/python3 | Python 3.13.5
+make: /usr/bin/make | GNU Make 4.4.1
+git: /usr/bin/git | git version 2.47.3

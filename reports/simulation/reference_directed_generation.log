@@ -1,0 +1,167 @@
+Generated 41 directed programs in /mnt/data/Superscalar_RISCV_Core/sw/hex
+{
+  "01_alu": {
+    "commits": 23,
+    "trap": "breakpoint"
+  },
+  "02_dual_issue": {
+    "commits": 10,
+    "trap": "breakpoint"
+  },
+  "03_dependencies": {
+    "commits": 7,
+    "trap": "breakpoint"
+  },
+  "04_forwarding": {
+    "commits": 8,
+    "trap": "breakpoint"
+  },
+  "05_branches": {
+    "commits": 14,
+    "trap": "breakpoint"
+  },
+  "06_jumps": {
+    "commits": 6,
+    "trap": "breakpoint"
+  },
+  "07_load_store": {
+    "commits": 16,
+    "trap": "breakpoint"
+  },
+  "08_mul": {
+    "commits": 6,
+    "trap": "breakpoint"
+  },
+  "09_div": {
+    "commits": 13,
+    "trap": "breakpoint"
+  },
+  "10_random_mix": {
+    "commits": 13,
+    "trap": "breakpoint"
+  },
+  "11_stress_dependencies": {
+    "commits": 10,
+    "trap": "breakpoint"
+  },
+  "12_branch_flush": {
+    "commits": 15,
+    "trap": "breakpoint"
+  },
+  "13_waw_pairing": {
+    "commits": 4,
+    "trap": "breakpoint"
+  },
+  "14_x0_invariant": {
+    "commits": 5,
+    "trap": "breakpoint"
+  },
+  "15_misaligned_load": {
+    "commits": 1,
+    "trap": "load_misaligned"
+  },
+  "16_misaligned_store": {
+    "commits": 2,
+    "trap": "store_misaligned"
+  },
+  "17_ecall": {
+    "commits": 1,
+    "trap": "ecall"
+  },
+  "18_illegal": {
+    "commits": 1,
+    "trap": "illegal"
+  },
+  "19_structural_replay": {
+    "commits": 10,
+    "trap": "breakpoint"
+  },
+  "20_div_corner_unsigned": {
+    "commits": 7,
+    "trap": "breakpoint"
+  },
+  "21_branch_outcomes": {
+    "commits": 32,
+    "trap": "breakpoint"
+  },
+  "22_forwarding_paths": {
+    "commits": 9,
+    "trap": "breakpoint"
+  },
+  "23_misaligned_jal": {
+    "commits": 0,
+    "trap": "instruction_misaligned"
+  },
+  "24_misaligned_jalr": {
+    "commits": 1,
+    "trap": "instruction_misaligned"
+  },
+  "25_misaligned_branch": {
+    "commits": 1,
+    "trap": "instruction_misaligned"
+  },
+  "26_precise_trap": {
+    "commits": 2,
+    "trap": "illegal"
+  },
+  "27_illegal_jalr_funct3": {
+    "commits": 0,
+    "trap": "illegal"
+  },
+  "28_illegal_branch_funct3": {
+    "commits": 0,
+    "trap": "illegal"
+  },
+  "29_illegal_load_funct3": {
+    "commits": 0,
+    "trap": "illegal"
+  },
+  "30_illegal_store_funct3": {
+    "commits": 0,
+    "trap": "illegal"
+  },
+  "31_illegal_shift_encoding": {
+    "commits": 0,
+    "trap": "illegal"
+  },
+  "32_illegal_op_encoding": {
+    "commits": 0,
+    "trap": "illegal"
+  },
+  "33_illegal_system": {
+    "commits": 0,
+    "trap": "illegal"
+  },
+  "34_not_taken_misaligned_branch": {
+    "commits": 3,
+    "trap": "breakpoint"
+  },
+  "35_jalr_bit0_clear": {
+    "commits": 3,
+    "trap": "breakpoint"
+  },
+  "36_overflow_wrap": {
+    "commits": 6,
+    "trap": "breakpoint"
+  },
+  "37_shift_mask": {
+    "commits": 9,
+    "trap": "breakpoint"
+  },
+  "38_signed_unsigned_extremes": {
+    "commits": 11,
+    "trap": "breakpoint"
+  },
+  "39_byte_lanes": {
+    "commits": 12,
+    "trap": "breakpoint"
+  },
+  "40_halfword_upper_lane": {
+    "commits": 9,
+    "trap": "breakpoint"
+  },
+  "41_mul_corners": {
+    "commits": 10,
+    "trap": "breakpoint"
+  }
+}

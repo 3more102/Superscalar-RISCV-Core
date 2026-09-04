@@ -21,15 +21,15 @@ if not yosys:
     raise SystemExit(2)
 
 probe = subprocess.run(
-    [yosys, '-m', 'slang', '-Q', '-p', 'help read_slang; help sat'],
+    [yosys, '-m', 'slang', '-Q', '-p', 'help read_slang; help sat; help cutpoint'],
     cwd=ROOT, text=True, capture_output=True,
 )
 if probe.returncode != 0 or 'No such command' in (probe.stdout + probe.stderr):
-    out.write_text('FORMAL: TOOL UNAVAILABLE (yosys-slang/read_slang or SAT frontend unavailable).\n')
+    out.write_text('FORMAL: TOOL UNAVAILABLE (yosys-slang/read_slang, SAT, or cutpoint unavailable).\n')
     print(out.read_text(), end='')
     raise SystemExit(2)
 
-# mode='seq' performs a direct one-step combinational proof.  mode='base32'
+# mode='seq' performs a direct one-step combinational proof. mode='base32'
 # keeps the complete-core obligation at 32 cycles, but uses Yosys' documented
 # faster bounded base-case engine (-tempinduct-baseonly -maxsteps 32) instead
 # of building one monolithic -seq 32 SAT instance.
@@ -65,6 +65,25 @@ targets = [
     ),
 ]
 
+# The core assertions are control/ordering properties, while ALU and branch
+# arithmetic is proven independently above.  For the 32-cycle core proof,
+# abstract datapath values at their observation points.  Each cutpoint becomes
+# an unconstrained value every cycle, so the control proof must hold for *all*
+# datapath results rather than for a reduced set of concrete arithmetic cases.
+# This is a conservative compositional abstraction and also removes the bulk of
+# the register-file read mux and arithmetic cone from the bounded SAT problem.
+CORE_CUTPOINTS = [
+    'w:*rf_r0*',
+    'w:*rf_r1*',
+    'w:*rf_r2*',
+    'w:*rf_r3*',
+    'w:*ex0_alu_y*',
+    'w:*ex1_alu_y*',
+    'w:*ex0_mul_y*',
+    'w:*div_result*',
+    'w:*ex0_branch_taken*',
+]
+
 results = []
 for name, files, top, mode, depth, formal_define in targets:
     read_cmd = 'read_slang ' + ' '.join(files) + f' --top {top}'
@@ -81,16 +100,30 @@ for name, files, top, mode, depth, formal_define in targets:
     else:
         raise RuntimeError(f'unknown formal mode: {mode}')
 
-    script = '; '.join([
+    script_parts = [
         read_cmd,
         f'prep -top {top}',
+        'flatten',
+        f'select -module {top}',
+    ]
+
+    if name == 'core':
+        # Fail loudly if synthesis/elaboration renames away any intended
+        # abstraction point; silently missing a cutpoint would weaken the
+        # reproducibility/performance of the formal flow.
+        script_parts.extend(f'select -assert-any {pat}' for pat in CORE_CUTPOINTS)
+        script_parts.append('cutpoint ' + ' '.join(CORE_CUTPOINTS))
+        script_parts.append('opt_clean')
+
+    script_parts.extend([
         'memory_map',
         'async2sync',
         'opt_clean',
-        'flatten',
         f'select -module {top}',
         sat_cmd,
     ])
+    script = '; '.join(script_parts)
+
     cp = subprocess.run(
         [yosys, '-m', 'slang', '-Q', '-p', script],
         cwd=ROOT, text=True, capture_output=True,
@@ -105,7 +138,8 @@ for name, files, top, mode, depth, formal_define in targets:
 with out.open('w') as f:
     f.write('FORMAL ENGINE: Yosys-Slang + Yosys SAT\n')
     f.write('SBY configuration files are retained under formal/ for portability.\n')
-    f.write('Core bounded proof: Yosys base-case engine through depth 32.\n\n')
+    f.write('Core bounded proof: Yosys base-case engine through depth 32.\n')
+    f.write('Core proof abstraction: RF read data + ALU/MUL/DIV results + branch outcome are formal cutpoints.\n\n')
     for name, mode, depth, rc, text in results:
         status = 'PASS' if rc == 0 else 'FAIL'
         f.write(f'=== {name}: {status} rc={rc} mode={mode} depth={depth} ===\n{text}\n')

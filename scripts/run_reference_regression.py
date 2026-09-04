@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from pathlib import Path
-import sys, json, traceback
+import sys, json
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'reference_model'))
 sys.path.insert(0,str(ROOT/'scripts'))
@@ -9,7 +9,7 @@ from gen_random_program import program
 from issue_model import issue_cycles
 import riscv_encode as E
 
-# Directed expectations are generated beside each HEX image.
+# Directed expectations are generated or retained beside each HEX image.
 report=[]
 for p in sorted((ROOT/'sw'/'hex').glob('[0-9][0-9]_*.hex')):
     try:
@@ -25,15 +25,17 @@ for p in sorted((ROOT/'sw'/'hex').glob('[0-9][0-9]_*.hex')):
 RANDOM_SEEDS=500
 random_ok=0
 random_commits=0
+random_failures=[]
 for seed in range(1,RANDOM_SEEDS+1):
     try:
         m=RV32IM(program(seed,80)).run(max_steps=100000)
         if m.trap=='breakpoint' and m.regs[0]==0:
             random_ok+=1
             random_commits += len(m.commits)
-        else: report.append((f'random_seed_{seed}',False,f'trap={m.trap}'))
+        else:
+            random_failures.append((f'random_seed_{seed}',False,f'trap={m.trap}'))
     except Exception as ex:
-        report.append((f'random_seed_{seed}',False,str(ex)))
+        random_failures.append((f'random_seed_{seed}',False,str(ex)))
 
 ind=[]
 for k in range(100):
@@ -43,15 +45,44 @@ dep=[E.addi(1,0,1)]
 for k in range(1,100): dep.append(E.addi(1,1,1))
 perf={'independent':issue_cycles(ind),'dependency_chain':issue_cycles(dep)}
 
-passed=sum(1 for _,ok,_ in report if ok)
-failed=[x for x in report if not x[1]]
-directed_commits=sum(int(msg.split('commits=')[1].split()[0]) for name,ok,msg in report if ok and not name.startswith('random_seed_') and 'commits=' in msg)
-summary={'directed_pass':passed,'directed_total':len([x for x in report if not x[0].startswith('random_seed_')]),'random_pass':random_ok,'random_total':RANDOM_SEEDS,'directed_commits':directed_commits,'random_commits':random_commits,'reference_commits_checked':directed_commits+random_commits,'failures':failed,'issue_model':perf}
-out=ROOT/'reports'/'simulation'/'reference_regression.json'; out.write_text(json.dumps(summary,indent=2))
+directed_pass=sum(1 for _,ok,_ in report if ok)
+directed_failures=[x for x in report if not x[1]]
+failures=directed_failures+random_failures
+directed_commits=sum(
+    int(msg.split('commits=')[1].split()[0])
+    for _,ok,msg in report
+    if ok and 'commits=' in msg
+)
+summary={
+    'directed_pass':directed_pass,
+    'directed_total':len(report),
+    'random_pass':random_ok,
+    'random_total':RANDOM_SEEDS,
+    'directed_commits':directed_commits,
+    'random_commits':random_commits,
+    'reference_commits_checked':directed_commits+random_commits,
+    'failures':failures,
+    'issue_model':perf,
+}
+out_dir=ROOT/'reports'/'simulation'
+out_dir.mkdir(parents=True,exist_ok=True)
+(out_dir/'reference_regression.json').write_text(json.dumps(summary,indent=2)+'\n')
+
+log_lines=[]
 for name,ok,msg in report:
-    if not name.startswith('random_seed_'): print(f'{name:28s} {"PASS" if ok else "FAIL":4s} {msg}')
-print(f'RANDOM REFERENCE SEEDS       {random_ok}/{RANDOM_SEEDS} PASS')
-print(f'REFERENCE COMMITS CHECKED    {directed_commits+random_commits}')
-print(f'ISSUE MODEL independent      IPC={perf["independent"]["issue_ipc"]:.3f} dual_cycles={perf["independent"]["dual_cycles"]}')
-print(f'ISSUE MODEL dependency-chain IPC={perf["dependency_chain"]["issue_ipc"]:.3f} dual_cycles={perf["dependency_chain"]["dual_cycles"]}')
-if failed or passed != summary['directed_total'] or random_ok != RANDOM_SEEDS: raise SystemExit(1)
+    log_lines.append(f'{name:28s} {"PASS" if ok else "FAIL":4s} {msg}')
+for name,_,msg in random_failures:
+    log_lines.append(f'{name:28s} FAIL {msg}')
+log_lines += [
+    f'DIRECTED REFERENCE TESTS    {directed_pass}/{len(report)} PASS',
+    f'RANDOM REFERENCE SEEDS      {random_ok}/{RANDOM_SEEDS} PASS',
+    f'REFERENCE COMMITS CHECKED   {directed_commits+random_commits}',
+    f'ISSUE MODEL independent     IPC={perf["independent"]["issue_ipc"]:.3f} dual_cycles={perf["independent"]["dual_cycles"]}',
+    f'ISSUE MODEL dependency-chain IPC={perf["dependency_chain"]["issue_ipc"]:.3f} dual_cycles={perf["dependency_chain"]["dual_cycles"]}',
+]
+log_text='\n'.join(log_lines)+'\n'
+(out_dir/'reference_regression.log').write_text(log_text)
+print(log_text,end='')
+
+if failures or directed_pass != len(report) or random_ok != RANDOM_SEEDS:
+    raise SystemExit(1)

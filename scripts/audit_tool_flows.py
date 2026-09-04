@@ -24,7 +24,7 @@ required_text={
  'tools/bootstrap_eda.sh':['oss-cad-suite-linux-x64','releases/latest','export PATH="$SUITE/bin:$PATH"'],
  'tools/bootstrap_eda.ps1':['oss-cad-suite-windows-x64','releases/latest','bin\\verilator.exe'],
  'tools/run_full_verification.ps1':['REQUIRE_EDA','scripts/run_all_checks.py','verilator','yosys','sby'],
- 'scripts/run_formal.py':["[yosys,'-m','slang'","env['PATH']=td+os.pathsep",'formal/core.sby'],
+ 'scripts/run_formal.py':["[yosys, '-m', 'slang'",'sat -verify -prove-asserts -set-assumes','core_formal_harness'],
  'formal/core.sby':['read_slang','formal/core_harness.sv','-D FORMAL'],
  'scripts/run_asic_timing.py':['LIBERTY_FILE','CLOCK_PERIOD_NS','SDC_FILE','dfflibmap -liberty','abc -liberty'],
 }

@@ -1,12 +1,14 @@
-module issue_harness;
+module issue_harness (
+  input riscv_pkg::decoded_t d0,
+  input riscv_pkg::decoded_t d1,
+  input logic stall0,
+  input logic stall1
+);
   import riscv_pkg::*;
 
-  // Unconstrained symbolic inputs for exhaustive dual-issue checking.
-  // Plain undriven internal signals are treated as X constants by the
-  // Yosys-Slang SAT flow; anyconst makes them formal variables instead.
-  (* anyconst *) decoded_t d0, d1;
-  (* anyconst *) logic stall0, stall1;
-
+  // Primary inputs are unconstrained SAT variables in the direct Yosys proof.
+  // This avoids frontend-specific anyconst handling and checks every possible
+  // decoded pair and external-stall combination.
   logic issue0, issue1, raw, waw, structural;
 
   dual_issue_unit dut(

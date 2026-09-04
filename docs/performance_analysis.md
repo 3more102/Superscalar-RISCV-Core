@@ -1,47 +1,76 @@
 # Performance Analysis
 
-## Baseline behavior
+## Baseline
 
-The machine can retire at most two instructions per cycle. The baseline pairs only independent simple integer operations. Memory, control-flow and M-extension operations serialize the pair. The RTL parameter `ENABLE_DUAL_ISSUE=0` forces the same core into single-issue mode for a later measured comparison.
+The core can issue/retire at most two instructions per cycle. The baseline pairs independent simple integer operations while memory, control-flow, system, and M-extension operations serialize the pair. `ENABLE_DUAL_ISSUE=0` forces the same RTL into single-issue mode, allowing an apples-to-apples performance comparison without changing the program or microarchitectural implementation.
 
-## Measurements available in the current environment
+## RTL-measured results
 
-No HDL simulator is installed here, so **no RTL-cycle IPC is claimed**. Two executable Python models were run:
+GitHub Actions run #20 executed `make rtl-perf` under Verilator. The same programs were simulated with dual issue enabled and disabled.
 
-1. the simple issue-policy sanity model reaches 2.000 issue IPC for a 200-instruction independent ALU stream and 1.000 for a same-register dependency chain;
-2. the cycle-oriented microarchitecture model includes front-end fill/replay, load-use bubbles, branch redirects and the blocking divider.
+| Program | Retired | Single cycles | 2-wide cycles | Single IPC | 2-wide IPC | RTL speedup | Dual-issue cycles |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| dependency_100 | 100 | 105 | 105 | 0.952 | 0.952 | **1.000x** | 0 |
+| independent_200 | 200 | 205 | 105 | 0.976 | **1.905** | **1.952x** | 100 |
 
-The cycle model completed **500/500 deterministic random workloads** with mean 2-wide model IPC **0.615** and mean speedup **1.187x** versus its forced single-issue configuration.
+These are **SystemVerilog RTL simulator measurements**. They are not analytical estimates and are not copied from the Python timing model.
 
-Directed model results are recorded in `reports/performance/microarchitecture_timing_model.md`; examples include:
+### Interpretation
 
-| Program | Single cycles(model) | 2-wide cycles(model) | Model speedup |
-|---|---:|---:|---:|
-| 01_alu | 28 | 17 | 1.647x |
-| 02_dual_issue | 15 | 10 | 1.500x |
-| 03_dependencies | 12 | 11 | 1.091x |
-| 09_div | 90 | 88 | 1.023x |
+The independent 200-instruction stream demonstrates the intended superscalar benefit: 100 cycles issue two instructions, reducing total execution from 205 cycles to 105 cycles and reaching **1.905 IPC**, a **1.952x** speedup over the forced single-issue build.
 
-These values are **timing-model results only**, not evidence of RTL performance.
+The 100-instruction dependency chain produces no legal dual-issue pairs. Both builds take 105 cycles and achieve 0.952 IPC, so the measured speedup is **1.000x**. This is the expected result for an in-order pairer that blocks intra-pair RAW dependencies.
 
-## RTL counters
+The fixed startup/drain overhead prevents the independent test from reporting exactly 2.000 architectural IPC even though the useful steady-state section dual-issues 100 pairs.
 
-The core contains counters for cycles, retired instructions, dual/single issue, stalls, branch/redirect count, static-not-taken mispredictions, load-use stalls, structural stalls and divider stalls. After real simulation, measured RTL IPC is `perf_retired / perf_cycles`.
+## Supporting RTL counters and events
 
-## Expected bottlenecks
+The core exposes counters for cycles, retired instructions, dual/single issue cycles, stalls, branch count, static-not-taken mispredictions, load-use stalls, structural stalls, and divider stalls.
 
-1. lane1 accepts only simple ALU/LUI/AUIPC work
-2. every memory operation serializes issue
+The RTL functional-coverage run observed, among other events:
+
+- dual issue: 59 events across the directed suite
+- single issue: 203
+- RAW pair blocks: 60
+- WAW pair blocks: 17
+- structural blocks: 552
+- redirects: 20
+- EX forwarding: 71
+- MEM forwarding: 24
+- WB forwarding: 18
+- load-use stalls: 1
+- divider stalls: 126
+
+These totals are verification-event observations across the 41 directed programs, not performance-benchmark totals.
+
+## Model-level evidence
+
+The project also keeps two executable Python performance models for rapid microarchitectural exploration:
+
+1. a simple issue-policy model reaches **2.000 issue IPC** for a 200-instruction independent ALU stream and **1.000** for a same-register dependency chain;
+2. a cycle-oriented model includes front-end fill/replay, load-use bubbles, branch redirects, and the blocking divider.
+
+The cycle model completed **500/500 deterministic random workloads** with mean 2-wide model IPC **0.615** and mean model speedup **1.187x** versus its forced single-issue configuration.
+
+Model results remain explicitly separated from RTL measurements.
+
+## Current bottlenecks
+
+1. lane 1 accepts only simple ALU/LUI/AUIPC work
+2. every memory operation serializes the pair
 3. all M-extension operations serialize issue
-4. static-not-taken pays redirect bubbles on taken branches/JAL/JALR
-5. load-use adds one cycle
+4. static-not-taken control flow pays redirect bubbles when taken
+5. load-use adds a one-cycle dependency stall
 6. DIV/REM holds EX for the configured divider latency
+7. no same-cycle lane0→lane1 forwarding is implemented
 
-## Next performance steps after RTL correctness
+## Next performance experiments
 
-1. allow `ALU + memory` pairing where resource ownership is unambiguous
-2. add same-cycle lane0-to-lane1 forwarding for simple ALU results
-3. pipeline or decouple the iterative MDU
-4. add BTB + 2-bit branch predictor
+1. allow safe ALU + memory pairing with explicit resource ownership
+2. add same-cycle lane0→lane1 forwarding for simple integer results
+3. pipeline or decouple the MDU where useful
+4. add a BTB + 2-bit branch predictor
 5. add instruction/data caches
-6. consider scoreboard-based scheduling only after the in-order baseline is fully RTL-verified
+6. evaluate scoreboard-based scheduling only after the in-order baseline remains fully verified
+
+Raw simulator evidence is retained by CI in the `rtl-simulation-reports` artifact; the generated summary is `reports/performance/rtl_performance_comparison.md` during the workflow run.

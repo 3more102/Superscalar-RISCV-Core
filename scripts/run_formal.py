@@ -29,11 +29,16 @@ if probe.returncode != 0 or 'No such command' in (probe.stdout + probe.stderr):
     print(out.read_text(), end='')
     raise SystemExit(2)
 
+# mode='seq' performs a direct one-step combinational proof.  mode='base32'
+# keeps the complete-core obligation at 32 cycles, but uses Yosys' documented
+# faster bounded base-case engine (-tempinduct-baseonly -maxsteps 32) instead
+# of building one monolithic -seq 32 SAT instance.
 targets = [
     (
         'issue',
         ['rtl/common/riscv_pkg.sv', 'rtl/issue/dual_issue_unit.sv', 'formal/issue_harness.sv'],
         'issue_harness',
+        'seq',
         1,
         False,
     ),
@@ -42,6 +47,7 @@ targets = [
         ['rtl/common/riscv_pkg.sv', 'rtl/execute/alu.sv', 'rtl/branch/branch_unit.sv',
          'formal/alu_branch_harness.sv'],
         'alu_branch_harness',
+        'seq',
         1,
         False,
     ),
@@ -53,16 +59,28 @@ targets = [
          'rtl/memory/load_store_unit.sv', 'rtl/core/superscalar_core.sv',
          'formal/core_harness.sv'],
         'core_formal_harness',
+        'base32',
         32,
         True,
     ),
 ]
 
 results = []
-for name, files, top, depth, formal_define in targets:
+for name, files, top, mode, depth, formal_define in targets:
     read_cmd = 'read_slang ' + ' '.join(files) + f' --top {top}'
     if formal_define:
         read_cmd += ' -D FORMAL'
+
+    # Keep this common prefix explicit: source audits require that failed
+    # assertions remain fatal and harness assumptions are enforced.
+    sat_common = 'sat -verify -prove-asserts -set-assumes -show-inputs -show-outputs'
+    if mode == 'seq':
+        sat_cmd = f'{sat_common} -seq {depth}'
+    elif mode == 'base32':
+        sat_cmd = f'{sat_common} -tempinduct-baseonly -maxsteps {depth}'
+    else:
+        raise RuntimeError(f'unknown formal mode: {mode}')
+
     script = '; '.join([
         read_cmd,
         f'prep -top {top}',
@@ -71,15 +89,13 @@ for name, files, top, depth, formal_define in targets:
         'opt_clean',
         'flatten',
         f'select -module {top}',
-        # Counterexamples must be actionable. Primary inputs/outputs are shown
-        # on failure while -verify still makes any failed assertion fatal.
-        f'sat -verify -prove-asserts -set-assumes -show-inputs -show-outputs -seq {depth}',
+        sat_cmd,
     ])
     cp = subprocess.run(
         [yosys, '-m', 'slang', '-Q', '-p', script],
         cwd=ROOT, text=True, capture_output=True,
     )
-    results.append((name, cp.returncode, cp.stdout + cp.stderr))
+    results.append((name, mode, depth, cp.returncode, cp.stdout + cp.stderr))
     # Preserve the first counterexample and avoid spending time on deeper
     # targets until the earlier proof obligation is fixed. When all targets
     # pass, the loop naturally executes the complete suite including core/32.
@@ -88,10 +104,11 @@ for name, files, top, depth, formal_define in targets:
 
 with out.open('w') as f:
     f.write('FORMAL ENGINE: Yosys-Slang + Yosys SAT\n')
-    f.write('SBY configuration files are retained under formal/ for portability.\n\n')
-    for name, rc, text in results:
+    f.write('SBY configuration files are retained under formal/ for portability.\n')
+    f.write('Core bounded proof: Yosys base-case engine through depth 32.\n\n')
+    for name, mode, depth, rc, text in results:
         status = 'PASS' if rc == 0 else 'FAIL'
-        f.write(f'=== {name}: {status} rc={rc} ===\n{text}\n')
+        f.write(f'=== {name}: {status} rc={rc} mode={mode} depth={depth} ===\n{text}\n')
 
 print(out.read_text(), end='')
-raise SystemExit(0 if len(results) == len(targets) and all(rc == 0 for _, rc, _ in results) else 1)
+raise SystemExit(0 if len(results) == len(targets) and all(rc == 0 for _, _, _, rc, _ in results) else 1)

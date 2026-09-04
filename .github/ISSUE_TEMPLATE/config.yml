@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Verification evidence and current status
+    url: https://github.com/3more102/Superscalar-RISCV-Core/blob/main/docs/ci_evidence.md
+    about: Check the retained CI evidence, proof boundary, RTL performance, and current limitations before filing an issue.

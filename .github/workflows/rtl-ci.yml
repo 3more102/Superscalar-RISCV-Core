@@ -7,12 +7,16 @@ on:
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/pull_request_template.md'
       - '.github/dependabot.yml'
+      - '.gitattributes'
+      - 'docs/repository_metadata.md'
   pull_request:
     paths-ignore:
       - '.github/CODEOWNERS'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/pull_request_template.md'
       - '.github/dependabot.yml'
+      - '.gitattributes'
+      - 'docs/repository_metadata.md'
   workflow_dispatch:
 
 permissions:

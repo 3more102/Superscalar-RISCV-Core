@@ -8,7 +8,12 @@ on:
       - '.github/pull_request_template.md'
       - '.github/dependabot.yml'
       - '.gitattributes'
-      - 'docs/repository_metadata.md'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'CITATION.cff'
+      - 'CONTRIBUTING.md'
+      - 'SECURITY.md'
+      - 'docs/**'
   pull_request:
     paths-ignore:
       - '.github/CODEOWNERS'
@@ -16,7 +21,14 @@ on:
       - '.github/pull_request_template.md'
       - '.github/dependabot.yml'
       - '.gitattributes'
-      - 'docs/repository_metadata.md'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'CITATION.cff'
+      - 'CONTRIBUTING.md'
+      - 'SECURITY.md'
+      - 'docs/**'
+  schedule:
+    - cron: '17 3 * * 1'
   workflow_dispatch:
 
 permissions:

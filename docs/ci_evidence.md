@@ -1,8 +1,39 @@
 # CI Verification Evidence
 
-This page is a provenance record for the first fully green execution of the strengthened verification flow.
+This page records both the **latest fully green code/workflow baseline** and the **first fully green execution** of the strengthened verification flow.
 
-## Provenance
+## Latest fully green code/workflow baseline
+
+- Repository: `3more102/Superscalar-RISCV-Core`
+- Branch: `main`
+- GitHub Actions workflow: `.github/workflows/rtl-ci.yml`
+- Run: [#39 / 33898231723](https://github.com/3more102/Superscalar-RISCV-Core/actions/runs/33898231723)
+- Verified code/workflow commit: [`49a50fb3b4e9416d612265c9c47d39d6bbafb2bc`](https://github.com/3more102/Superscalar-RISCV-Core/commit/49a50fb3b4e9416d612265c9c47d39d6bbafb2bc)
+- Commit subject: `ci: ignore repository presentation metadata`
+
+All five mandatory jobs completed with conclusion `success` on that commit:
+
+1. Python / Reference Verification
+2. RTL Simulation / Coverage / Performance
+3. Verilator Lint
+4. Formal Verification
+5. Yosys Synthesis
+
+The current `main` branch is two presentation-only commits ahead of this verified code/workflow baseline: `docs/repository_metadata.md` was updated and `.gitattributes` was added to classify generated evidence. A GitHub compare between `49a50fb` and the current presentation head shows only those two files changed; no RTL, testbench, reference model, formal harness, synthesis script, or verification script changed.
+
+### Latest retained GitHub Actions artifacts
+
+| Artifact | Artifact ID | SHA-256 digest |
+|---|---:|---|
+| reference-verification-reports | 9946586953 | `fe28976e34e1b74bcd0a0763217c2916ff6617b60ffdf55c3003b884656c7acc` |
+| lint-report | 9946603447 | `60bf2c99ede65e74d6de7f2a6b9d744fc87b0826e817636205b215e96a9bbc61` |
+| synthesis-report | 9946607107 | `8aca35ec374ba11d481cd80529cae1f3387339fed9d29da852bc101136bfe231` |
+| rtl-simulation-reports | 9946620154 | `52556085895abea0095b09ec1fcffdfb7904c86551aa78a44c84ecf41dd70514` |
+| formal-reports | 9946672402 | `ce2f19724b191a18d05b07860b88c52957bbb3f780171d5e5c90e169b362bfb4` |
+
+These are GitHub-reported artifact digests for run #39.
+
+## First fully green provenance
 
 - Repository: `3more102/Superscalar-RISCV-Core`
 - Branch: `main`
@@ -19,7 +50,7 @@ All five mandatory jobs completed with conclusion `success` on that commit:
 4. Formal Verification
 5. Yosys Synthesis
 
-## Retained GitHub Actions artifacts
+### First retained GitHub Actions artifacts
 
 | Artifact | Artifact ID | SHA-256 digest |
 |---|---:|---|

@@ -1,6 +1,6 @@
 PYTHON ?= python3
 
-.PHONY: test reference microarch coverage rtl rtl-coverage rtl-perf lint synth asic formal ci clean
+.PHONY: test reference microarch coverage rtl rtl-coverage rtl-code-coverage rtl-perf lint synth asic formal ci clean
 
 test:
 	$(PYTHON) scripts/run_all_checks.py
@@ -23,6 +23,9 @@ rtl:
 
 rtl-coverage:
 	$(PYTHON) scripts/analyze_rtl_coverage.py
+
+rtl-code-coverage:
+	$(PYTHON) scripts/run_verilator_code_coverage.py
 
 rtl-perf:
 	$(PYTHON) scripts/run_rtl_performance_compare.py

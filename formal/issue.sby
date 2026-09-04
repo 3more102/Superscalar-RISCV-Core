@@ -6,7 +6,6 @@ depth 1
 smtbmc
 
 [script]
-plugin -i slang
 read_slang rtl/common/riscv_pkg.sv rtl/issue/dual_issue_unit.sv formal/issue_harness.sv --top issue_harness
 prep -top issue_harness
 [files]

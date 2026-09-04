@@ -17,6 +17,7 @@ module div_unit #(
 
   localparam int STEPS_PER_CYCLE = 32 / LATENCY;
   localparam int CW = (LATENCY <= 1) ? 1 : $clog2(LATENCY);
+  localparam logic [CW-1:0] LAST_CYCLE = CW'(LATENCY - 1);
 
   logic [CW-1:0] cycle_q;
   logic [31:0] quotient_q;
@@ -130,7 +131,7 @@ module div_unit #(
           special_result_q <= (op == MDU_DIV) ? 32'h8000_0000 : 32'd0;
         end
       end else if (busy) begin
-        if (cycle_q == LATENCY-1) begin
+        if (cycle_q == LAST_CYCLE) begin
           busy <= 1'b0;
           done <= 1'b1;
           cycle_q <= '0;

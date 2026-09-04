@@ -267,8 +267,7 @@ module superscalar_core #(
     .dec(mem0_q.dec), .eff_addr(mem0_q.mem_addr),
     .store_data_raw(mem0_q.store_data), .dmem_rdata(dmem_rdata),
     .aligned_addr(lsu_aligned_addr), .store_wdata(lsu_store_wdata),
-    .store_be(lsu_store_be), .load_value(lsu_load_value),
-    .misaligned()
+    .store_be(lsu_store_be), .load_value(lsu_load_value)
   );
 
   always_comb begin
@@ -567,8 +566,11 @@ module superscalar_core #(
     commit0_pc = wb0_q.dec.pc;
     commit0_instr = wb0_q.dec.instr;
     commit0_rd_we = commit0_valid && wb0_q.dec.rd_write && (wb0_q.dec.rd != 5'd0);
-    commit0_rd = wb0_q.dec.rd;
-    commit0_value = wb0_q.wb_value;
+    // Normalize architecturally inactive writeback fields.  The commit trace
+    // is a public verification interface, so non-writing instructions must not
+    // expose encoding residue from instr[11:7] or datapath don't-care values.
+    commit0_rd = commit0_rd_we ? wb0_q.dec.rd : 5'd0;
+    commit0_value = commit0_rd_we ? wb0_q.wb_value : 32'd0;
     commit0_mem_we = commit0_valid && wb0_q.mem_write;
     commit0_mem_addr = wb0_q.mem_addr;
     commit0_mem_data = wb0_q.store_data;
@@ -577,8 +579,8 @@ module superscalar_core #(
     commit1_pc = wb1_q.dec.pc;
     commit1_instr = wb1_q.dec.instr;
     commit1_rd_we = commit1_valid && wb1_q.dec.rd_write && (wb1_q.dec.rd != 5'd0);
-    commit1_rd = wb1_q.dec.rd;
-    commit1_value = wb1_q.wb_value;
+    commit1_rd = commit1_rd_we ? wb1_q.dec.rd : 5'd0;
+    commit1_value = commit1_rd_we ? wb1_q.wb_value : 32'd0;
   end
 
   // --------------------------------------------------------------------------

@@ -49,7 +49,7 @@ for sby in targets:
 core=ROOT/'formal'/'core.sby'
 if core.is_file():
     ct=core.read_text()
-    for needle in ('formal/core_harness.sv','-D FORMAL','--top core_formal_harness','plugin -i slang'):
+    for needle in ('formal/core_harness.sv','-D FORMAL','--top core_formal_harness','read_slang'):
         if needle not in ct:
             issues.append(f'formal/core.sby: required complete-core marker missing: {needle}')
 else:

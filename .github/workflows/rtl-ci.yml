@@ -42,8 +42,11 @@ jobs:
   python-reference:
     name: Python / Reference Verification
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
       - name: Install Python test dependency
         run: python3 -m pip install pytest
       - name: Tool inventory
@@ -81,8 +84,11 @@ jobs:
     name: RTL Simulation / Coverage / Performance
     needs: python-reference
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
       - uses: YosysHQ/setup-oss-cad-suite@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -108,8 +114,11 @@ jobs:
     name: Verilator Lint
     needs: python-reference
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
       - uses: YosysHQ/setup-oss-cad-suite@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -126,8 +135,11 @@ jobs:
     name: Formal Verification
     needs: python-reference
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
       - uses: YosysHQ/setup-oss-cad-suite@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -144,8 +156,11 @@ jobs:
     name: Yosys Synthesis
     needs: python-reference
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
       - uses: YosysHQ/setup-oss-cad-suite@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

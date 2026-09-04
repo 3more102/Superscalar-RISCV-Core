@@ -80,6 +80,11 @@ for name, files, top, depth, formal_define in targets:
         cwd=ROOT, text=True, capture_output=True,
     )
     results.append((name, cp.returncode, cp.stdout + cp.stderr))
+    # Preserve the first counterexample and avoid spending time on deeper
+    # targets until the earlier proof obligation is fixed. When all targets
+    # pass, the loop naturally executes the complete suite including core/32.
+    if cp.returncode != 0:
+        break
 
 with out.open('w') as f:
     f.write('FORMAL ENGINE: Yosys-Slang + Yosys SAT\n')
@@ -89,4 +94,4 @@ with out.open('w') as f:
         f.write(f'=== {name}: {status} rc={rc} ===\n{text}\n')
 
 print(out.read_text(), end='')
-raise SystemExit(0 if all(rc == 0 for _, rc, _ in results) else 1)
+raise SystemExit(0 if len(results) == len(targets) and all(rc == 0 for _, rc, _ in results) else 1)

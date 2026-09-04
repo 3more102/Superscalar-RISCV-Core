@@ -4,9 +4,38 @@ All notable engineering milestones for this repository are recorded here. Result
 
 ## Unreleased
 
-### Release candidate: v0.2.0 — Verification Infrastructure Release
+### Verification closure and repository maintenance
 
-#### Added
+The current `main` branch has a fully green open-source EDA baseline. GitHub Actions **run #40** (`33898768472`) completed all five mandatory jobs successfully on commit `5c99926d7839c35b63ddb39e08d0176cae34313b`.
+
+Executed evidence on the current engineering baseline:
+
+- Python verification: **25/25 PASS**
+- directed architectural reference programs: **41/41 PASS**
+- deterministic random architectural seeds: **500/500 PASS**
+- required RV32IM mnemonics exercised: **47/47**
+- reference/stimulus coverage: **54/54 PASS**
+- architectural commits checked: **47,280**
+- restoring-divider differential comparisons: **20,000/20,000 PASS**
+- front-end replay stress: **100,000/100,000 cycles PASS**
+- RTL differential regression under Verilator: **91/91 PASS** — 41 directed + 50 random
+- RTL functional-event coverage: **58/58 PASS**
+- Verilator lint: **PASS** — 0 unexpected warning categories
+- formal issue proof: **PASS**
+- formal ALU/branch equivalence proof: **PASS**
+- formal core control/order proof: **PASS through 32 cycles**
+- generic Yosys synthesis: **PASS** — 43,289 generic primitive cells, 0 `check` problems
+- RTL single-vs-dual performance: dependency chain **1.000x**, independent ALU stream **1.952x** speedup with 2-wide IPC **1.905**
+
+Repository maintenance added after the initial release includes strict multi-job CI, weekly reproducibility execution, Dependabot for GitHub Actions, issue/PR templates, CODEOWNERS, retained CI artifact digests, and repository-presentation metadata.
+
+Technology-characterized ASIC area, STA, WNS/TNS, maximum frequency, and power remain intentionally unclaimed because no characterized standard-cell Liberty/constraint set has been supplied.
+
+## v0.2.0 — Verification Infrastructure Release
+
+Released: **2026-09-04**
+
+### Architecture and RTL
 
 - synthesizable 32-bit RV32IM processor baseline
 - 2-wide fetch and decode with conservative in-order dual issue
@@ -19,26 +48,20 @@ All notable engineering milestones for this repository are recorded here. Result
 - byte/half/word LSU formatting and misalignment handling
 - RV32M multiply forms and configurable-latency restoring divider
 - precise baseline trap/halt quiescence for younger architectural side effects
+
+### Verification and tooling infrastructure
+
 - Python RV32IM architectural reference model
 - deterministic directed and random program generation
 - commit-trace RTL comparison infrastructure
 - issue-policy, pipeline timing, front-end replay, and divider differential models
-- portable assertions and yosys-slang/SymbiYosys formal harnesses
-- strict OSS CAD Suite GitHub Actions flow
-- Yosys synthesis plus optional Liberty-based mapping/STA infrastructure
+- SystemVerilog assertions and formal harnesses
+- Verilator simulation/lint flows
+- Yosys-Slang/Yosys SAT formal automation
+- generic Yosys synthesis
+- optional Liberty-based technology mapping and STA infrastructure
+- OSS CAD Suite GitHub Actions integration
 
-#### Executed reference/model evidence
+### Project status language
 
-- 25/25 Python tests PASS
-- 41/41 directed architectural programs PASS
-- 500/500 deterministic random architectural seeds PASS
-- 47/47 required ISA mnemonics exercised
-- 54/54 reference/stimulus coverage points PASS
-- 47,280 architectural commits checked
-- 20,000/20,000 restoring-divider differential comparisons PASS
-- 100,000/100,000 front-end replay stress cycles PASS
-- 500/500 cycle-oriented microarchitecture workloads completed
-
-#### Open EDA gates
-
-Full RTL simulation/commit equivalence, RTL functional coverage, measured RTL IPC, Verilator lint, formal solver proofs, Yosys synthesis, and characterized ASIC timing remain environment/tool dependent until actually executed. No PPA or frequency values are inferred from model-only evidence.
+This release is an **engineering/educational RTL release with executable verification infrastructure**. It is not presented as silicon-proven, production-ready, security-certified, or tapeout-ready hardware. Technology-dependent PPA claims require a real standard-cell library and implementation flow.

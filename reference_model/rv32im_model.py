@@ -180,7 +180,11 @@ class RV32IM:
         if value is not None:
             if rd != 0:
                 self.regs[rd] = u32(value)
-            c.rd_we = rd != 0; c.rd = rd; c.rd_value = u32(value)
+                c.rd_we = True
+                c.rd = rd
+                c.rd_value = u32(value)
+            # Writes targeting x0 have no architectural writeback.  Leave the
+            # commit writeback fields at their normalized zero defaults.
         self.regs[0] = 0
         self.pc = next_pc
         self.commits.append(c)

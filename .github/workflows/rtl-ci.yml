@@ -54,7 +54,7 @@ jobs:
         run: python3 scripts/audit_tool_flows.py
       - name: Archive reference evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: reference-verification-reports
           path: reports/
@@ -78,7 +78,7 @@ jobs:
         run: make rtl-perf
       - name: Archive RTL evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: rtl-simulation-reports
           path: |
@@ -99,7 +99,7 @@ jobs:
         run: make lint
       - name: Archive lint report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: lint-report
           path: reports/lint_report.txt
@@ -117,7 +117,7 @@ jobs:
         run: make formal
       - name: Archive formal reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: formal-reports
           path: reports/formal/
@@ -135,7 +135,7 @@ jobs:
         run: make synth
       - name: Archive synthesis report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: synthesis-report
           path: reports/synthesis/

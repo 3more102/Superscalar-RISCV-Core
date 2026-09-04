@@ -19,10 +19,16 @@ sim/obj_dir/
 sim/generated_random/
 sim/obj_perf_*/
 sim/perf_*.vvp
+sim/obj_codecov/
+sim/codecov_tmp/
 
 # Generated detailed traces/coverage databases
 reports/simulation/*_trace.csv
 reports/coverage/*_coverage.txt
+reports/coverage/verilator_raw/
+reports/coverage/verilator_annotated/
+reports/coverage/verilator_code_coverage.dat
+reports/coverage/verilator_code_coverage.info
 coverage.dat
 *.ucdb
 

@@ -1,0 +1,9 @@
+# Default code ownership for review routing.
+* @3more102
+
+# Core RTL and formal verification changes require owner review.
+/rtl/ @3more102
+/formal/ @3more102
+/tb/ @3more102
+/scripts/ @3more102
+/.github/workflows/ @3more102

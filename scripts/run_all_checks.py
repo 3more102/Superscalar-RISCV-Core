@@ -17,6 +17,7 @@ checks=[
  ('EDA/CI tool flow audit',[sys.executable,'scripts/audit_tool_flows.py'],{0}),
  ('RTL simulation',[sys.executable,'scripts/run_rtl_regression.py'],{0,2}),
  ('RTL functional coverage',[sys.executable,'scripts/analyze_rtl_coverage.py'],{0,2}),
+ ('Verilator RTL code coverage',[sys.executable,'scripts/run_verilator_code_coverage.py'],{0,2}),
  ('RTL performance compare',[sys.executable,'scripts/run_rtl_performance_compare.py'],{0,2}),
  ('Verilator lint',[sys.executable,'scripts/run_lint.py'],{0,2}),
  ('formal',[sys.executable,'scripts/run_formal.py'],{0,2}),

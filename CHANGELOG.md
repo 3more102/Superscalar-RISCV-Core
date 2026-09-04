@@ -6,7 +6,7 @@ All notable engineering milestones for this repository are recorded here. Result
 
 ### Verification closure and repository maintenance
 
-The current `main` branch has a fully green open-source EDA baseline. GitHub Actions **run #40** (`33898768472`) completed all five mandatory jobs successfully on commit `5c99926d7839c35b63ddb39e08d0176cae34313b`.
+The latest fully green source/tool-flow baseline is GitHub Actions **run #48** (`33900989274`) on commit `9a620d9d2b6ab2970b3a54f6852fae9684afe5ad`. All five mandatory jobs completed successfully on that same revision.
 
 Executed evidence on the current engineering baseline:
 
@@ -20,6 +20,10 @@ Executed evidence on the current engineering baseline:
 - front-end replay stress: **100,000/100,000 cycles PASS**
 - RTL differential regression under Verilator: **91/91 PASS** — 41 directed + 50 random
 - RTL functional-event coverage: **58/58 PASS**
+- Verilator RTL line coverage: **98.35%** — 416/423
+- Verilator RTL branch coverage: **99.34%** — 303/305
+- Verilator RTL toggle coverage: **75.00%** — 10,636/14,182
+- RTL code-coverage source completeness: **9/9 measurable module files present**; definition-only `riscv_pkg.sv` reported separately
 - Verilator lint: **PASS** — 0 unexpected warning categories
 - formal issue proof: **PASS**
 - formal ALU/branch equivalence proof: **PASS**
@@ -27,7 +31,13 @@ Executed evidence on the current engineering baseline:
 - generic Yosys synthesis: **PASS** — 43,289 generic primitive cells, 0 `check` problems
 - RTL single-vs-dual performance: dependency chain **1.000x**, independent ALU stream **1.952x** speedup with 2-wide IPC **1.905**
 
-Repository maintenance added after the initial release includes strict multi-job CI, weekly reproducibility execution, Dependabot for GitHub Actions, issue/PR templates, CODEOWNERS, retained CI artifact digests, and repository-presentation metadata.
+### RTL code-coverage baseline
+
+A dedicated `make rtl-code-coverage` flow now reruns all 91 RTL programs with Verilator code-coverage instrumentation, merges per-test databases, excludes testbench instrumentation from reported percentages, and validates that every measurable synthesizable RTL source appears in coverage evidence.
+
+The first baseline intentionally does **not** impose an arbitrary pass percentage. It fails on broken instrumentation/collection, test failures, missing executable RTL sources, or vacuous line/branch/toggle coverage classes. Functional-event coverage remains a separate 58/58 semantic metric.
+
+Repository maintenance also includes strict multi-job CI, weekly reproducibility execution, Dependabot for GitHub Actions, issue/PR templates, CODEOWNERS, retained CI artifact digests, and repository-presentation metadata.
 
 Technology-characterized ASIC area, STA, WNS/TNS, maximum frequency, and power remain intentionally unclaimed because no characterized standard-cell Liberty/constraint set has been supplied.
 

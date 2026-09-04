@@ -5,7 +5,7 @@
 [![RTL](https://img.shields.io/badge/RTL-SystemVerilog-2f74c0)](rtl/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-A synthesizable **32-bit, 2-wide superscalar, in-order issue / in-order retirement RV32IM processor core** written in SystemVerilog. The project is built as a CPU-microarchitecture and RTL-verification portfolio piece: dual fetch/decode/issue, dependency-aware pairing, replay, EX/MEM/WB forwarding, branch recovery, a single-port LSU, RV32M with an iterative divider, precise educational trap handling, differential commit-trace verification, formal properties, and open-source synthesis automation.
+A synthesizable **32-bit, 2-wide superscalar, in-order issue / in-order retirement RV32IM processor core** written in SystemVerilog. The project is built as a CPU-microarchitecture and RTL-verification portfolio piece: dual fetch/decode/issue, dependency-aware pairing, replay, EX/MEM/WB forwarding, branch recovery, a single-port LSU, RV32M with an iterative divider, precise educational trap handling, differential commit-trace verification, formal properties, RTL code coverage, and open-source synthesis automation.
 
 ## What this project demonstrates
 
@@ -13,14 +13,14 @@ A synthesizable **32-bit, 2-wide superscalar, in-order issue / in-order retireme
 - **Synthesizable SystemVerilog RTL:** modular decode, ALU, branch, register-file, issue, LSU, multiply/divide, and top-level pipeline implementation.
 - **Dependency and hazard engineering:** RAW/WAW/resource checks, EX/MEM/WB forwarding, load-use handling, divider stalls, and younger-slot replay.
 - **RV32IM implementation:** base integer ISA, all eight M-extension operations, alignment handling, illegal encodings, ECALL/EBREAK, and JALR/IALIGN corner cases.
-- **Self-checking verification:** directed programs, deterministic random workloads, a Python architectural reference model, commit-trace differential checking, and functional-event coverage.
+- **Self-checking verification:** directed programs, deterministic random workloads, a Python architectural reference model, commit-trace differential checking, functional-event coverage, and Verilator RTL line/branch/toggle coverage.
 - **Formal verification:** symbolic issue and ALU/branch proofs plus a bounded 32-cycle compositional control/order proof using Yosys-Slang and Yosys SAT.
 - **Measured superscalar behavior:** the same RTL is compiled as single-issue and 2-wide to quantify IPC and speedup on dependent versus independent workloads.
-- **Open-source ASIC/EDA flow design:** strict GitHub Actions CI, Verilator lint/simulation, Yosys synthesis, formal automation, and optional Liberty-based mapped synthesis/STA infrastructure.
+- **Open-source ASIC/EDA flow design:** strict GitHub Actions CI, Verilator lint/simulation/code coverage, Yosys synthesis, formal automation, and optional Liberty-based mapped synthesis/STA infrastructure.
 
 ## Verified status
 
-The latest fully green **code/workflow baseline** is GitHub Actions **run #40**, commit [`5c99926`](https://github.com/3more102/Superscalar-RISCV-Core/commit/5c99926d7839c35b63ddb39e08d0176cae34313b). All five mandatory jobs passed on that revision. Run #40 also validates the weekly reproducibility schedule and the docs-only CI path policy. Subsequent README/CI-evidence commits are documentation-only and do not modify RTL, testbench, reference-model, formal, synthesis, or verification-script behavior. The CI badge above tracks the current `main` branch.
+The latest fully green **source/tool-flow baseline** is GitHub Actions **run #48**, commit [`9a620d9`](https://github.com/3more102/Superscalar-RISCV-Core/commit/9a620d9d2b6ab2970b3a54f6852fae9684afe5ad). All five mandatory jobs passed on that same revision, including the new RTL-only line/branch/toggle code-coverage gate. Documentation commits after that verified revision do not modify RTL, testbench, reference-model, formal, synthesis, or verification-script behavior. The CI badge above tracks the current `main` branch.
 
 | Gate | Executed result |
 |---|---:|
@@ -34,6 +34,10 @@ The latest fully green **code/workflow baseline** is GitHub Actions **run #40**,
 | Front-end replay stress | **100,000/100,000 cycles PASS** |
 | RTL differential regression | **91/91 PASS** — 41 directed + 50 random |
 | RTL functional event coverage | **58/58 points PASS** |
+| RTL line code coverage | **98.35%** — 416/423 |
+| RTL branch code coverage | **99.34%** — 303/305 |
+| RTL toggle code coverage | **75.00%** — 10,636/14,182 |
+| Measurable RTL sources in code coverage | **9/9 present** — `riscv_pkg.sv` is definition-only |
 | Verilator lint policy | **PASS** — 12 allowed unused warnings, 0 unexpected |
 | Formal issue proof | **PASS** |
 | Formal ALU/branch equivalence proof | **PASS** |
@@ -159,6 +163,8 @@ The RTL regression runs 41 directed programs and 50 deterministic random program
 
 RTL functional-event coverage closed **58/58 points** across branch outcomes, all load/store sizes and byte lanes, all eight M operations, trap classes, dual/single issue, RAW/WAW/structural blocking, replay/redirect behavior, EX/MEM/WB forwarding, load-use stalls, and divider stalls.
 
+Separately, the same 91-program regression is rerun with Verilator code-coverage instrumentation and testbench points excluded from the reported percentages. Run #48 measured **98.35% line (416/423)**, **99.34% branch (303/305)**, and **75.00% toggle (10,636/14,182)** coverage across **9/9 executable synthesizable RTL sources**. `riscv_pkg.sv` is recorded as a definition-only package and is not treated as an executable coverage target. This first baseline enforces coverage-flow integrity and non-vacuity rather than an arbitrary percentage threshold.
+
 See [`docs/verification_plan.md`](docs/verification_plan.md).
 
 ## Formal verification
@@ -171,7 +177,7 @@ The executed formal flow uses **Yosys-Slang + Yosys SAT** and is fail-fast on th
 
 The 32-cycle core proof uses explicit formal cutpoints for RF read data and ALU/MUL/DIV/branch result values. This is a **compositional control proof**: datapath values are arbitrary at those cutpoints, so the control invariants must hold for all such values; it is not presented as a monolithic proof of all RV32IM arithmetic semantics.
 
-The retained solver report records `SUCCESS` for issue and ALU/branch and `proved base case for 32 steps: SUCCESS!` for the core target.
+The retained run #48 solver report records `SUCCESS` for issue and ALU/branch and a successful 32-cycle base-case proof for the core target.
 
 ## RTL-measured performance
 
@@ -188,7 +194,7 @@ See [`docs/performance_analysis.md`](docs/performance_analysis.md).
 
 ## Synthesis and lint
 
-The latest fully green code/workflow baseline, run #40, completed generic Yosys synthesis with **0 `check` problems**. After generic technology mapping the design contained **43,289 Yosys primitive cells**. This is a technology-independent complexity metric only; it is **not** standard-cell area and must not be compared directly with an ASIC gate-equivalent figure.
+The latest fully green source/tool-flow baseline, run #48, completed generic Yosys synthesis with **0 `check` problems**. After generic technology mapping the design contained **43,289 Yosys primitive cells**. This is a technology-independent complexity metric only; it is **not** standard-cell area and must not be compared directly with an ASIC gate-equivalent figure.
 
 Verilator lint passed the repository policy with **12 warnings**, all from explicitly allowed `UNUSEDSIGNAL` / `UNUSEDPARAM` categories, and **0 unexpected warnings**.
 
@@ -225,12 +231,13 @@ make test
 Focused EDA targets:
 
 ```bash
-make rtl            # RTL differential regression
-make rtl-coverage   # RTL event coverage
-make rtl-perf       # single-vs-dual RTL performance
-make lint           # Verilator lint
-make formal         # Yosys-Slang/Yosys SAT formal proofs
-make synth          # generic Yosys synthesis
+make rtl                 # RTL differential regression
+make rtl-coverage        # RTL functional-event coverage
+make rtl-code-coverage   # Verilator RTL line/branch/toggle coverage
+make rtl-perf            # single-vs-dual RTL performance
+make lint                # Verilator lint
+make formal              # Yosys-Slang/Yosys SAT formal proofs
+make synth               # generic Yosys synthesis
 ```
 
 Technology-mapped flow:
@@ -252,7 +259,7 @@ On Windows/WSL, see [`docs/tool_setup_windows.md`](docs/tool_setup_windows.md) a
 4. Formal Verification
 5. Yosys Synthesis
 
-The EDA jobs use OSS CAD Suite and mandatory failures are not hidden with `continue-on-error`. Source/tool-flow changes trigger the strict suite, and the workflow also runs automatically every Monday at **03:17 UTC** as a reproducibility check. Documentation-only and repository-presentation changes are intentionally excluded from the expensive EDA rerun.
+The RTL job requires commit-trace regression, functional-event coverage, RTL line/branch/toggle code coverage, and single-vs-dual performance to succeed. The EDA jobs use OSS CAD Suite and mandatory failures are not hidden with `continue-on-error`. Source/tool-flow changes trigger the strict suite, and the workflow also runs automatically every Monday at **03:17 UTC** as a reproducibility check. Documentation-only and repository-presentation changes are intentionally excluded from the expensive EDA rerun.
 
 ## Limitations
 
@@ -264,6 +271,7 @@ This is an **educational/research RTL core**, not a claim of silicon-proven, sec
 
 - [x] close RTL differential regression under Verilator
 - [x] close RTL functional event coverage
+- [x] establish RTL line/branch/toggle code-coverage baseline
 - [x] measure single-vs-dual RTL IPC and speedup
 - [x] close executable issue, ALU/branch, and 32-cycle core formal targets
 - [x] close generic Yosys synthesis and Verilator lint in CI

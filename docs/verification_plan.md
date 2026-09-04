@@ -2,14 +2,15 @@
 
 ## Strategy
 
-Verification is split into four layers:
+Verification is split into five independently interpreted layers:
 
 1. architectural Python RV32IM reference model and controlled encoder
 2. directed and deterministic random program generation
-3. RTL self-checking simulation with commit-trace comparison when Icarus/Verilator is available
-4. assertions, lint, formal and synthesis when their tools are available
+3. RTL self-checking simulation with commit-trace comparison
+4. functional-event coverage plus RTL-only line/branch/toggle code coverage
+5. assertions, lint, formal verification and synthesis
 
-No stage is marked PASS unless its tool actually executed successfully.
+No stage is marked PASS unless its tool actually executes successfully. Model-only measurements are never presented as RTL results, and technology-dependent ASIC metrics are not claimed without a characterized library and constraints.
 
 ## Directed tests
 
@@ -45,9 +46,9 @@ No stage is marked PASS unless its tool actually executed successfully.
 
 ## Random tests
 
-`scripts/gen_random_program.py` creates deterministic straight-line RV32IM streams with seeded ALU, M-extension, dependency chains and periodic store/load operations. `run_reference_regression.py` executes seeds **1..500** against the Python architectural model. When an HDL simulator is present, `run_rtl_regression.py` additionally runs **50 deterministic random RTL seeds** and checks every commit against the same architectural model.
+`scripts/gen_random_program.py` creates deterministic straight-line RV32IM streams with seeded ALU, M-extension, dependency chains and periodic store/load operations. `run_reference_regression.py` executes seeds **1..500** against the Python architectural model. The Verilator RTL regression additionally runs **50 deterministic random RTL seeds** and checks every commit against the same architectural model.
 
-When an RTL simulator is available, generated `.hex` programs are run on RTL and the architectural commit sequence is compared against the reference model.
+Generated `.hex` programs are run on RTL and the architectural commit sequence is compared against the reference model.
 
 ## Commit checker
 
@@ -57,7 +58,7 @@ The RTL testbench emits:
 cycle,slot,pc,instr,rd_we,rd,rd_value,mem_we,mem_addr,mem_data
 ```
 
-The comparison checks PC and instruction identity for each architectural commit, destination write enable/register/value, and store side effects. Slot0 is logged before slot1.
+The comparison checks PC and instruction identity for each architectural commit, destination write enable/register/value, store side effects, and terminal trap state. Slot0 is logged before slot1.
 
 ## Assertion intent
 
@@ -75,11 +76,31 @@ Portable immediate assertions check:
 * no instruction issues after halt
 * no architectural commit, register-file write, or data-memory access after halt
 
-Additional OSS formal targets are specified in `formal/`. They use yosys-slang plus immediate assertions; the core invariants are compiled under `` `ifdef FORMAL `` to avoid dependence on `bind`/rich SVA in the default open-source flow. `formal/core_harness.sv` constrains reset low for the first sampled clock and high thereafter while leaving instruction/data values symbolic. The complete-core invariant set also checks front-end adjacency/alignment, slot1 replay, redirect flush, lane1 resource legality, precise-exception emptiness, memory-side-effect ordering, and EX→MEM age preservation.
+Additional OSS formal targets are specified in `formal/`. They use Yosys-Slang plus immediate assertions; the core invariants are compiled under `` `ifdef FORMAL `` to avoid dependence on `bind`/rich SVA in the default open-source flow. `formal/core_harness.sv` constrains reset low for the first sampled clock and high thereafter while leaving instruction/data values symbolic. The complete-core invariant set also checks front-end adjacency/alignment, slot1 replay, redirect flush, lane1 resource legality, precise-exception emptiness, memory-side-effect ordering, divider stall behavior, and temporal pipeline movement.
 
-## Functional coverage
+## Functional-event coverage
 
-The portable testbench records explicit functional event counters rather than relying on simulator-specific covergroups. Counters include dual/single issue, RAW/WAW/structural pairing blocks, redirects, loads, stores, branches, JAL/JALR, OP/OP-IMM, and M-extension commits. Detailed architectural behavior is independently checked by the commit-trace scoreboard. The files are generated under `reports/coverage/` during RTL simulation.
+The portable testbench records explicit functional event counters rather than relying on simulator-specific covergroups. Counters include branch outcomes, dual/single issue, RAW/WAW/structural pairing blocks, replay/redirect behavior, EX/MEM/WB forwarding, loads/stores and byte lanes, OP/OP-IMM, all M-extension operations, trap classes, load-use stalls and divider stalls. Detailed architectural behavior is independently checked by the commit-trace scoreboard.
+
+The run #48 directed suite closed **58/58 functional-event points**. These are semantic verification events and must not be confused with statement/branch/toggle code coverage.
+
+## RTL line/branch/toggle code coverage
+
+`make rtl-code-coverage` runs the same **41 directed + 50 deterministic random = 91 programs** using Verilator coverage instrumentation, writes one coverage database per test, merges the databases, and generates both LCOV and annotated RTL evidence.
+
+The reported percentages are RTL-only; testbench files are excluded from the metric. The source-completeness gate requires every executable synthesizable RTL source to appear in LCOV and annotated output. Definition-only SystemVerilog packages are listed separately because declarations and typedefs do not produce executable Verilator coverage points.
+
+The first verified baseline, GitHub Actions run #48, measured:
+
+| Coverage class | Covered | Total | Result |
+|---|---:|---:|---:|
+| Line | 416 | 423 | **98.35%** |
+| Branch | 303 | 305 | **99.34%** |
+| Toggle | 10,636 | 14,182 | **75.00%** |
+
+All **9/9 measurable RTL module files** were present. `riscv_pkg.sv` was correctly identified as definition-only package source.
+
+No arbitrary percentage threshold is imposed for this initial measured baseline. The gate instead fails on simulator/coverage-tool errors, failed test execution, missing executable RTL sources, or vacuous line/branch/toggle classes. A future threshold should be introduced only after the baseline and exclusions are intentionally reviewed.
 
 ## Divider algorithm stress
 
@@ -106,10 +127,10 @@ The restoring divider has a bit-accurate Python mirror. The unit test executes *
 * redirect flush
 * divider busy stall
 
-## Exit criteria
-
-Architectural-model tests, RTL commit-trace equivalence, RTL assertions, lint and synthesis are independent quality gates. Missing tools yield `TOOL UNAVAILABLE`, not PASS.
-
 ## RTL performance comparison
 
 `make rtl-perf` compiles the same testbench twice, once with `ENABLE_DUAL_ISSUE=1` and once with `ENABLE_DUAL_ISSUE=0`, then runs identical independent and dependency-heavy programs. The resulting cycles, IPC, dual-issue count and speedup are written only if the simulator runs successfully.
+
+## Exit criteria
+
+The strict verification baseline requires independent success of architectural-model tests, RTL commit-trace equivalence, functional-event coverage, RTL code-coverage collection/integrity, RTL assertions, lint, formal verification, and generic synthesis. Missing tools yield `TOOL UNAVAILABLE`, not PASS. Technology-characterized timing/area/power remain separate gates that require a real standard-cell library and constraints.

@@ -1,8 +1,8 @@
-# Final Verification Summary — GitHub CI Run #20
+# Final Verification Summary — GitHub CI Run #48
 
-This file records executed evidence for commit [`94f688763d81035057f7fe00959bfd4f3e3948fc`](https://github.com/3more102/Superscalar-RISCV-Core/commit/94f688763d81035057f7fe00959bfd4f3e3948fc), validated by GitHub Actions run [`33873379783`](https://github.com/3more102/Superscalar-RISCV-Core/actions/runs/33873379783).
+This file records executed evidence for source/tool-flow commit [`9a620d9d2b6ab2970b3a54f6852fae9684afe5ad`](https://github.com/3more102/Superscalar-RISCV-Core/commit/9a620d9d2b6ab2970b3a54f6852fae9684afe5ad), validated by GitHub Actions run [#48 / `33900989274`](https://github.com/3more102/Superscalar-RISCV-Core/actions/runs/33900989274).
 
-All five mandatory jobs completed successfully on the same RTL revision: Python/reference verification, RTL simulation/coverage/performance, Verilator lint, formal verification, and Yosys synthesis.
+All five mandatory jobs completed successfully on the same revision: Python/reference verification, RTL simulation/coverage/performance, Verilator lint, formal verification, and Yosys synthesis.
 
 | Item | Executed result |
 |---|---|
@@ -17,10 +17,14 @@ All five mandatory jobs completed successfully on the same RTL revision: Python/
 | Cycle-oriented microarchitecture workloads | **500/500 completed** |
 | RTL differential regression | **91/91 PASS** — 41 directed + 50 random |
 | RTL functional event coverage | **58/58 points PASS** |
+| RTL line code coverage | **98.35%** — 416/423 |
+| RTL branch code coverage | **99.34%** — 303/305 |
+| RTL toggle code coverage | **75.00%** — 10,636/14,182 |
+| Code-coverage source completeness | **9/9 measurable RTL files present**; `riscv_pkg.sv` definition-only |
 | Verilator lint policy | **PASS** — warnings=12, allowed=`UNUSEDPARAM`,`UNUSEDSIGNAL`, unexpected=0 |
 | Formal issue target | **PASS**, Yosys SAT `SUCCESS` |
 | Formal ALU/branch target | **PASS**, Yosys SAT `SUCCESS` |
-| Formal core control/order target | **PASS through 32 cycles** — `proved base case for 32 steps: SUCCESS!` |
+| Formal core control/order target | **PASS through 32 cycles** — base-case depth 32 |
 | Generic Yosys synthesis | **PASS**, 43,289 generic primitive cells, Yosys `check`: 0 problems |
 | Technology-mapped ASIC synthesis | **NOT RUN** — no characterized `LIBERTY_FILE` supplied |
 | Characterized STA / WNS / TNS / Fmax | **NOT RUN / NOT CLAIMED** |
@@ -41,17 +45,31 @@ These are **RTL simulator measurements**, not model estimates.
 
 The directed RTL suite closed **58/58** tracked event points. Observed events include all six branch classes with taken/not-taken outcomes, all five load variants, all three stores and required byte/halfword lanes, all eight RV32M operations, all tracked trap classes, dual issue, single issue, RAW/WAW/structural blocking, redirects, EX/MEM/WB forwarding, load-use stall, and divider stall.
 
-Representative totals from the run include: dual_issue=59, single_issue=203, pair_raw=60, pair_waw=17, structural_block=552, redirect=20, forward_ex=71, forward_mem=24, forward_wb=18, load_use_stall=1, divider_stall=126.
+Representative totals from run #48 include: dual_issue=59, single_issue=203, pair_raw=60, pair_waw=17, structural_block=552, redirect=20, forward_ex=71, forward_mem=24, forward_wb=18, load_use_stall=1, divider_stall=126.
+
+## Verilator RTL code coverage
+
+Run #48 also executed a separate, instrumented 91-program Verilator pass for RTL-only code coverage. Annotated testbench points are excluded from the percentages.
+
+| Coverage type | Covered | Total | Result |
+|---|---:|---:|---:|
+| Line | 416 | 423 | **98.35%** |
+| Branch | 303 | 305 | **99.34%** |
+| Toggle | 10,636 | 14,182 | **75.00%** |
+
+Coverage evidence contains **9/9 measurable synthesizable RTL module files**. `rtl/common/riscv_pkg.sv` is explicitly recorded as a definition-only SystemVerilog package; Verilator does not emit executable coverage points for declarations/typedefs alone. The gate therefore requires every executable RTL source to appear in LCOV and annotated output, while reporting definition-only packages separately.
+
+No arbitrary percentage threshold is enforced in this first measured baseline. The gate fails for simulator/coverage errors, failed tests, missing executable RTL sources, or vacuous line/branch/toggle classes. These metrics are separate from the project's 58/58 functional-event coverage.
 
 ## Formal proof boundary
 
 The executed formal engine is **Yosys-Slang + Yosys SAT**.
 
-- `issue`: symbolic primary-input combinational proof, depth 1.
-- `alu_branch`: symbolic primary-input RTL-vs-expected-output proof, depth 1.
-- `core`: bounded base-case proof through **32 cycles**.
+- `issue`: `PASS rc=0 mode=seq depth=1`.
+- `alu_branch`: `PASS rc=0 mode=seq depth=1`.
+- `core`: `PASS rc=0 mode=base32 depth=32`.
 
-The core target is intentionally compositional. RF read values plus ALU/MUL/DIV results and branch outcome are explicit formal cutpoints. The solver log confirms all intended cutpoints were created before the 32-cycle proof. This means the core control/order properties must hold for arbitrary values at those datapath boundaries; it does **not** claim a monolithic proof of every RV32IM arithmetic operation across 32 cycles.
+The core target is intentionally compositional. RF read values plus ALU/MUL/DIV results and branch outcome are explicit formal cutpoints. The formal-flow source audit in the retained run #48 artifact reports **3 targets, 0 issues**. This means the core control/order properties must hold for arbitrary values at those datapath boundaries; it does **not** claim a monolithic proof of every RV32IM arithmetic operation across 32 cycles.
 
 The in-core assertions cover issue legality, front-end adjacency/alignment, slot1 replay, redirect behavior, lane1 restrictions, precise exception ordering, memory-side-effect legality, halted-state suppression, divider stall behavior, and temporal pipeline movement.
 
@@ -69,4 +87,4 @@ The cell count is a Yosys generic-primitive count after generic technology mappi
 
 ## Evidence provenance
 
-See [`docs/ci_evidence.md`](../docs/ci_evidence.md) for the exact run, artifact identifiers, SHA-256 artifact digests, formal solver markers, lint policy, and synthesis provenance.
+See [`docs/ci_evidence.md`](../docs/ci_evidence.md) for the exact run, artifact identifiers, SHA-256 artifact digests, formal solver markers, lint policy, synthesis provenance, and code-coverage interpretation.

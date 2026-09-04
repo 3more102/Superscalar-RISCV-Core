@@ -1,15 +1,15 @@
 # CI Verification Evidence
 
-This page records both the **latest fully green code/workflow baseline** and the **first fully green execution** of the strengthened verification flow.
+This page records the **latest fully green source/tool-flow baseline** and preserves the first fully green execution of the strengthened verification flow for historical provenance.
 
-## Latest fully green code/workflow baseline
+## Latest fully green source/tool-flow baseline
 
 - Repository: `3more102/Superscalar-RISCV-Core`
 - Branch: `main`
 - GitHub Actions workflow: `.github/workflows/rtl-ci.yml`
-- Run: [#40 / 33898768472](https://github.com/3more102/Superscalar-RISCV-Core/actions/runs/33898768472)
-- Verified code/workflow commit: [`5c99926d7839c35b63ddb39e08d0176cae34313b`](https://github.com/3more102/Superscalar-RISCV-Core/commit/5c99926d7839c35b63ddb39e08d0176cae34313b)
-- Commit subject: `ci: add weekly reproducibility run and skip docs-only changes`
+- Run: [#48 / 33900989274](https://github.com/3more102/Superscalar-RISCV-Core/actions/runs/33900989274)
+- Verified source/tool-flow commit: [`9a620d9d2b6ab2970b3a54f6852fae9684afe5ad`](https://github.com/3more102/Superscalar-RISCV-Core/commit/9a620d9d2b6ab2970b3a54f6852fae9684afe5ad)
+- Commit subject: `test: classify definition-only packages in code coverage`
 
 All five mandatory jobs completed with conclusion `success` on that commit:
 
@@ -19,50 +19,19 @@ All five mandatory jobs completed with conclusion `success` on that commit:
 4. Formal Verification
 5. Yosys Synthesis
 
-Run #40 also verifies the scheduled reproducibility workflow itself: the CI now executes automatically every Monday at `03:17 UTC` in addition to source-triggered and manual runs. Documentation-only and repository-presentation changes are excluded from the expensive EDA suite, while RTL, verification, formal, synthesis, and workflow changes remain strict CI triggers.
+The RTL job separately executed commit-trace regression, functional-event coverage, RTL line/branch/toggle code coverage, and single-vs-dual performance. The code-coverage step completed successfully before the RTL job was archived. Documentation-only and repository-presentation changes are excluded from the expensive EDA suite, while RTL, verification, formal, synthesis, and workflow changes remain strict CI triggers. The workflow also executes every Monday at `03:17 UTC` for reproducibility.
 
-Subsequent README/CI-evidence edits are documentation-only; they do not modify RTL, testbench, reference-model, formal, synthesis, or verification-script behavior.
-
-### Latest retained GitHub Actions artifacts
+### Run #48 retained GitHub Actions artifacts
 
 | Artifact | Artifact ID | SHA-256 digest |
 |---|---:|---|
-| reference-verification-reports | 9946785875 | `ccb74a90502a2b1d7d41af56d86d1d49dad443001c1a7e09813f864577bcc78a` |
-| lint-report | 9946803180 | `f295e2ee8c0f04fe8df9118ca9e2f75f777e699f1f693b8f5fca9b0778af9138` |
-| synthesis-report | 9946804221 | `d7c7e0aff3ed3d8bc7c4ebf4dbb403f7d69342a14b10d891488d0b80e104d1d4` |
-| rtl-simulation-reports | 9946822917 | `1e4e9dff40b3b1f2708d92fc4cd6df76d6d71c5ad70ce8a70f88f4f3ce2b689f` |
-| formal-reports | 9946850087 | `1859b6d80959ae0cb9932efa228eb7f4c7250973df5e4a32790097fd21555745` |
+| reference-verification-reports | 9947615667 | `f6eebba836caca80c50c35788e7e75b570295f17b2b2163113317eec4bffd4ad` |
+| lint-report | 9947634223 | `c97afba00a5822cb9776436f5a0b7ee085aa882a8d04e8baa9bedd92161b9f89` |
+| synthesis-report | 9947634201 | `0233529a903a52cbd805f4df8b90e5dd6901fdae118c1d85c189649f48309a45` |
+| rtl-simulation-reports | 9947672592 | `bcf65ea4864d18b846efb32a7caf2e7b404063828b19aeef31c2162b5d88016e` |
+| formal-reports | 9947699599 | `a161b520384b046e963e43e9e3dd32b594738f9b8b9d2ff71dcc19e77bcfbaf8` |
 
-These are GitHub-reported artifact digests for run #40.
-
-## First fully green provenance
-
-- Repository: `3more102/Superscalar-RISCV-Core`
-- Branch: `main`
-- GitHub Actions workflow: `.github/workflows/rtl-ci.yml`
-- Run: [#20 / 33873379783](https://github.com/3more102/Superscalar-RISCV-Core/actions/runs/33873379783)
-- Verified RTL commit: [`94f688763d81035057f7fe00959bfd4f3e3948fc`](https://github.com/3more102/Superscalar-RISCV-Core/commit/94f688763d81035057f7fe00959bfd4f3e3948fc)
-- Commit subject: `formal: abstract datapath in 32-cycle control proof`
-
-All five mandatory jobs completed with conclusion `success` on that commit:
-
-1. Python / Reference Verification
-2. RTL Simulation / Coverage / Performance
-3. Verilator Lint
-4. Formal Verification
-5. Yosys Synthesis
-
-### First retained GitHub Actions artifacts
-
-| Artifact | Artifact ID | SHA-256 digest |
-|---|---:|---|
-| reference-verification-reports | 9936826124 | `16d4ce6898dd80caf1aedc8656c4f7aefc815d9b42be5d6b416d1c561b599b72` |
-| lint-report | 9936840816 | `7af125f59c9e8933ca9b069de59dcbff22512ed5b4ed6b5788c03b29d136e1ea` |
-| synthesis-report | 9936843483 | `8424d287b028684b58f7ee06a5827cce21bbaef32c3e86c95463b841cf343e25` |
-| rtl-simulation-reports | 9936859159 | `f6d1800f7e8e2a2b76633b44ff4873ae90c646dae76a3dc77ec0ca9860c27dc9` |
-| formal-reports | 9936905745 | `8baffde63d4eecb6cb9c8519949911387ee78cbc01b9332270814d05d0873ceb` |
-
-The artifact hashes above are GitHub-reported digests for the ZIP artifacts generated by run #20.
+These are GitHub-reported artifact digests for run #48.
 
 ## Reference verification
 
@@ -123,7 +92,28 @@ Representative event totals:
 - load_use_stall=1
 - divider_stall=126
 
-This is functional event coverage, not statement/branch/toggle code coverage.
+This is functional-event coverage. It is intentionally separate from RTL code coverage.
+
+## RTL line/branch/toggle code coverage
+
+Run #48 reran the same **91 programs** with Verilator code-coverage instrumentation and merged the resulting coverage databases.
+
+| Coverage type | Covered points | Total points | Coverage |
+|---|---:|---:|---:|
+| Line | 416 | 423 | **98.35%** |
+| Branch | 303 | 305 | **99.34%** |
+| Toggle | 10,636 | 14,182 | **75.00%** |
+
+Coverage scope and validation:
+
+- reported percentages are **RTL-only**; annotated testbench files are excluded
+- **9/9 measurable synthesizable RTL files** appear in both expected coverage evidence paths
+- `rtl/common/riscv_pkg.sv` is a definition-only package and is recorded separately because declarations/typedefs do not produce executable Verilator coverage points
+- a point is counted covered when executed/toggled at least once (`--annotate-min 1`)
+- no arbitrary percentage threshold is imposed in the first baseline
+- the gate fails if instrumentation/collection/merge fails, a test fails, an executable RTL source is missing, or line/branch/toggle classes are vacuous
+
+The run #48 JSON report records `valid_non_vacuous_report: true` and `coverage_threshold_enforced: false`.
 
 ## RTL performance
 
@@ -140,25 +130,13 @@ These values come from RTL simulation of identical programs with only the dual-i
 
 Engine: **Yosys-Slang + Yosys SAT**.
 
-The retained `formal_report.txt` contains the following proof results:
+The retained run #48 `formal_report.txt` records:
 
-- `issue`: `PASS rc=0 mode=seq depth=1`, followed by `SAT proof finished - no model found: SUCCESS!`
-- `alu_branch`: `PASS rc=0 mode=seq depth=1`, followed by `SAT proof finished - no model found: SUCCESS!`
-- `core`: `PASS rc=0 mode=base32 depth=32`, followed by `Reached maximum number of time steps -> proved base case for 32 steps: SUCCESS!`
+- `issue`: `PASS rc=0 mode=seq depth=1`, followed by a successful SAT proof
+- `alu_branch`: `PASS rc=0 mode=seq depth=1`, followed by a successful SAT proof
+- `core`: `PASS rc=0 mode=base32 depth=32`
 
-For the core target, the log explicitly records creation of these nine cutpoints:
-
-- `dut.rf_r0`
-- `dut.rf_r1`
-- `dut.rf_r2`
-- `dut.rf_r3`
-- `dut.ex0_alu_y`
-- `dut.ex1_alu_y`
-- `dut.ex0_mul_y`
-- `dut.div_result`
-- `dut.ex0_branch_taken`
-
-The runner validates every intended cutpoint with `select -assert-any` before applying it. Therefore a renamed or missing abstraction point makes the proof fail instead of silently weakening the intended flow.
+The retained `formal_flow_audit.txt` reports **3 targets** and **0 issues**. For the core target, RF read values plus ALU/MUL/DIV results and branch outcome are explicit formal cutpoints validated before the bounded proof.
 
 ### Formal interpretation
 
@@ -166,7 +144,7 @@ The issue and ALU/branch targets are direct symbolic combinational proofs. The c
 
 ## Verilator lint
 
-Verilator version reported by the run: **5.051 devel rev v5.050-309-g228635918**.
+Verilator version retained by the verified flow: **5.051 devel rev v5.050-309-g228635918**.
 
 Lint policy result:
 
@@ -179,7 +157,7 @@ The allowed warnings are intentional unused fields/bits in shared packed structu
 
 ## Generic Yosys synthesis
 
-Yosys version reported by the run: **0.68+182**.
+Yosys version retained by the verified flow: **0.68+182**.
 
 Final generic statistics for `superscalar_core`:
 
@@ -194,6 +172,16 @@ Final generic statistics for `superscalar_core`:
 - reported peak memory: **253.56 MB**
 
 The 43,289 cell value is a Yosys generic primitive count after generic technology mapping. It is not standard-cell area, gate-equivalent area, timing, or power.
+
+## First fully green provenance
+
+The first fully green execution of the strengthened five-job flow is retained for history:
+
+- Run: [#20 / 33873379783](https://github.com/3more102/Superscalar-RISCV-Core/actions/runs/33873379783)
+- Verified RTL commit: [`94f688763d81035057f7fe00959bfd4f3e3948fc`](https://github.com/3more102/Superscalar-RISCV-Core/commit/94f688763d81035057f7fe00959bfd4f3e3948fc)
+- Commit subject: `formal: abstract datapath in 32-cycle control proof`
+
+Run #20 predates the run #48 RTL code-coverage extension; it remains provenance for the earlier verification closure, not the latest code-coverage baseline.
 
 ## What is still intentionally unclaimed
 

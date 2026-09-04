@@ -1,15 +1,38 @@
 # 2-Wide Superscalar RV32IM RISC-V Core
 
+[![RTL CI](https://github.com/3more102/Superscalar-RISCV-Core/actions/workflows/rtl-ci.yml/badge.svg)](https://github.com/3more102/Superscalar-RISCV-Core/actions/workflows/rtl-ci.yml)
 [![ISA](https://img.shields.io/badge/ISA-RV32IM-5b2c6f)](https://docs.riscv.org/reference/isa/v20260120/unpriv/rv32.html)
 [![RTL](https://img.shields.io/badge/RTL-SystemVerilog-2f74c0)](rtl/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Status](https://img.shields.io/badge/status-educational%20%2F%20research%20RTL-informational)](#verification-status)
 
-A synthesizable **32-bit, 2-wide superscalar, in-order issue / in-order retirement RV32IM processor core** written in SystemVerilog. The baseline implements dual fetch/decode/issue, conservative dependency-aware pairing, forwarding, control-flow recovery, a single-port LSU, RV32M including an iterative divider, precise educational trap handling, differential reference-model verification, formal infrastructure, and open-source synthesis/timing flows.
+A synthesizable **32-bit, 2-wide superscalar, in-order issue / in-order retirement RV32IM processor core** written in SystemVerilog. The project is built as a CPU-microarchitecture and RTL-verification portfolio piece: dual fetch/decode/issue, dependency-aware pairing, replay, EX/MEM/WB forwarding, branch recovery, a single-port LSU, RV32M with an iterative divider, precise educational trap handling, differential commit-trace verification, formal properties, and open-source synthesis automation.
 
-> **Verification boundary:** model/reference checks below have executed and are recorded in `reports/`. Full RTL simulation, lint, formal solver execution, synthesis, and characterized timing remain separate EDA gates and are never reported as PASS unless their tools actually run.
+## Verified status
 
-## Architecture at a glance
+The latest retained green evidence is GitHub Actions **run #20**, commit [`94f6887`](https://github.com/3more102/Superscalar-RISCV-Core/commit/94f688763d81035057f7fe00959bfd4f3e3948fc). All mandatory CI jobs passed on the same RTL revision.
+
+| Gate | Executed result |
+|---|---:|
+| Python verification tests | **25/25 PASS** |
+| Directed architectural reference tests | **41/41 PASS** |
+| Random architectural reference seeds | **500/500 PASS** |
+| Reference commits checked | **47,280** |
+| Required RV32IM mnemonics exercised | **47/47** |
+| Reference/stimulus functional coverage | **54/54** |
+| Divider differential stress | **20,000/20,000 PASS** |
+| Front-end replay stress | **100,000/100,000 cycles PASS** |
+| RTL differential regression | **91/91 PASS** — 41 directed + 50 random |
+| RTL functional event coverage | **58/58 points PASS** |
+| Verilator lint policy | **PASS** — 12 allowed unused warnings, 0 unexpected |
+| Formal issue proof | **PASS** |
+| Formal ALU/branch equivalence proof | **PASS** |
+| Formal core control/order proof | **PASS through 32 cycles** |
+| Generic Yosys synthesis | **PASS** — 43,289 generic primitive cells, 0 check problems |
+| Characterized ASIC area/timing/power | **Not claimed** — no standard-cell Liberty was supplied |
+
+Detailed CI provenance and artifact digests are recorded in [`docs/ci_evidence.md`](docs/ci_evidence.md). The concise verification summary is in [`reports/final_verification_summary.md`](reports/final_verification_summary.md).
+
+## Architecture
 
 ```text
                          +----------------------+
@@ -51,156 +74,57 @@ A synthesizable **32-bit, 2-wide superscalar, in-order issue / in-order retireme
                               32 x 32 RF
 ```
 
-Slot 0 is always older than slot 1. If the younger instruction cannot legally pair, slot 0 proceeds and slot 1 is retained/replayed; slot 1 never overtakes slot 0 architecturally.
+Slot 0 is always older than slot 1. If the younger instruction cannot legally pair, slot 0 proceeds and slot 1 is retained/replayed. Slot 1 never overtakes slot 0 architecturally.
 
-## What this project demonstrates
-
-- CPU microarchitecture and pipeline design in synthesizable SystemVerilog
-- superscalar dependency analysis, conservative pairing, and replay
-- RAW/WAW/structural hazard handling and EX/MEM/WB bypassing
-- branch/jump redirect and wrong-path suppression
-- RV32IM decode and execution, including a multi-cycle restoring divider
-- byte/half/word load-store formatting and alignment checking
-- self-checking architectural reference modeling and commit-trace comparison infrastructure
-- deterministic directed/random verification and coverage-oriented stimuli
-- portable assertions plus SymbiYosys/yosys-slang formal targets
-- Yosys generic synthesis and optional Liberty-based technology mapping / STA infrastructure
-
-## Technical highlights
+### Microarchitecture summary
 
 | Feature | Baseline implementation |
 |---|---|
 | ISA | RV32IM + ECALL/EBREAK educational trap termination |
 | XLEN | 32 bits |
-| Fetch width | 2 instructions |
-| Decode width | 2 instructions |
-| Maximum issue width | 2 instructions |
-| Scheduling | In-order |
-| Retirement | In-order |
-| Lane 0 | ALU / control / LSU / MDU |
-| Lane 1 | Integer ALU / LUI / AUIPC baseline |
-| Pair policy | Conservative; no intra-pair RAW/WAW or serializing/resource conflicts |
-| Branch policy | Static not-taken baseline |
-| Memory architecture | Harvard-style instruction/data interfaces |
-| LSU | One data-memory operation per issue cycle baseline |
+| Fetch / decode / max issue width | 2 / 2 / 2 |
+| Scheduling / retirement | In-order / in-order |
+| Lane 0 | ALU, control flow, LSU, MDU |
+| Lane 1 | Integer ALU, LUI, AUIPC |
+| Pair policy | No intra-pair RAW, WAW, serializing, or structural conflict |
+| Branch policy | Static not-taken |
+| Memory | Harvard-style instruction/data interfaces; one data-memory operation baseline |
+| Forwarding | EX, MEM, WB |
 | Divider | Configurable-latency restoring iterative divider |
-| Verification | directed + random + reference model + commit trace + assertions/formal infrastructure |
-| RTL language | SystemVerilog |
+| Trap model | Precise educational halt/trap indication; not full privileged ISA |
 
-## Verification status
-
-The current numbers are generated from the checked-in reports, especially `reports/final_verification_summary.md` and `reports/check_status.json`.
-
-| Verification item | Current result |
-|---|---:|
-| Python verification tests | **25/25 PASS** |
-| Directed architectural programs | **41/41 PASS** |
-| Random architectural seeds | **500/500 PASS** |
-| Required ISA mnemonics exercised | **47/47** |
-| Reference/stimulus coverage | **54/54 points PASS** |
-| Reference-model committed instructions checked | **47,280** |
-| Restoring-divider differential checks | **20,000/20,000 PASS** |
-| Front-end replay stress | **100,000/100,000 cycles PASS** |
-| Front-end model instructions issued | **126,494** |
-| Front-end model redirects | **208** |
-| Cycle-oriented microarchitecture workloads | **500/500 completed** |
-| Static RTL source audit | **PASS — 0 detected issues** |
-| Formal-flow source audit | **PASS** — configuration integrity only |
-| EDA/CI tool-flow source audit | **PASS** — configuration integrity only |
-| RTL compile / simulation | **TOOL UNAVAILABLE** in the originating environment |
-| RTL commit-trace equivalence | **NOT RUN** without HDL simulator |
-| RTL functional coverage | **NOT RUN** without HDL simulator |
-| Verilator lint | **TOOL UNAVAILABLE** in the originating environment |
-| Formal solver execution | **TOOL UNAVAILABLE** in the originating environment |
-| Yosys synthesis | **TOOL UNAVAILABLE** in the originating environment |
-| Technology-mapped cell count / STA / WNS / MHz | **NOT RUN** — requires real Liberty/constraints/tools |
-
-**Reference/stimulus coverage is not RTL code coverage.** Likewise, model IPC is not RTL-measured IPC.
-
-Detailed evidence: [`reports/final_verification_summary.md`](reports/final_verification_summary.md).
+See [`docs/microarchitecture.md`](docs/microarchitecture.md) and [`docs/dual_issue_matrix.md`](docs/dual_issue_matrix.md).
 
 ## ISA support
 
-### RV32I
+**RV32I:** `LUI`, `AUIPC`, `JAL`, `JALR`, `BEQ`, `BNE`, `BLT`, `BGE`, `BLTU`, `BGEU`, `LB`, `LH`, `LW`, `LBU`, `LHU`, `SB`, `SH`, `SW`, `ADDI`, `SLTI`, `SLTIU`, `XORI`, `ORI`, `ANDI`, `SLLI`, `SRLI`, `SRAI`, `ADD`, `SUB`, `SLL`, `SLT`, `SLTU`, `XOR`, `SRL`, `SRA`, `OR`, `AND`.
 
-| Class | Instructions |
-|---|---|
-| Upper immediates | `LUI`, `AUIPC` |
-| Jumps | `JAL`, `JALR` |
-| Branches | `BEQ`, `BNE`, `BLT`, `BGE`, `BLTU`, `BGEU` |
-| Loads | `LB`, `LH`, `LW`, `LBU`, `LHU` |
-| Stores | `SB`, `SH`, `SW` |
-| Immediate ALU | `ADDI`, `SLTI`, `SLTIU`, `XORI`, `ORI`, `ANDI`, `SLLI`, `SRLI`, `SRAI` |
-| Register ALU | `ADD`, `SUB`, `SLL`, `SLT`, `SLTU`, `XOR`, `SRL`, `SRA`, `OR`, `AND` |
+**RV32M:** `MUL`, `MULH`, `MULHSU`, `MULHU`, `DIV`, `DIVU`, `REM`, `REMU`.
 
-### RV32M
+`ECALL`, `EBREAK`, alignment faults, and unsupported/reserved encodings are handled by the project’s educational precise trap/halt path. The core does **not** claim full privileged-architecture compliance.
 
-`MUL`, `MULH`, `MULHSU`, `MULHU`, `DIV`, `DIVU`, `REM`, `REMU`
+## Dual issue and hazards
 
-### System / illegal handling
+The baseline deliberately favors correctness and auditability over aggressive pairing.
 
-`ECALL` and `EBREAK` are implemented as serializing educational termination/trap events. Unsupported/reserved encodings raise the internal illegal-instruction trap indication. This project does **not** claim full privileged-architecture compliance.
+| Older slot 0 | Younger slot 1 | Dual issue? |
+|---|---|---:|
+| independent simple integer ops | independent simple integer ops | Yes |
+| ALU result consumed by slot 1 | dependent ALU | No — RAW replay |
+| same nonzero destination | any register writer | No — WAW replay |
+| memory op | anything | No |
+| anything | memory op | No |
+| branch/JAL/JALR | anything | No |
+| M-extension | anything | No |
+| system/illegal | anything | No |
 
-## Superscalar pairing rules
+Operand selection uses newest-producer priority across EX, MEM, and WB. A load resident in EX causes the baseline one-cycle load-use stall. DIV/REM blocks EX until the iterative divider completes. Same-cycle lane0→lane1 forwarding is intentionally not implemented in this baseline.
 
-The baseline intentionally favors simple, auditable correctness over aggressive pairing.
+## Control flow and traps
 
-| Older slot 0 | Younger slot 1 | Dual issue? | Reason |
-|---|---|---:|---|
-| independent ALU / OP-IMM | independent ALU / OP-IMM | Yes | no RAW/WAW/resource stall |
-| `LUI` / `AUIPC` | simple integer op | Yes | same dependency rules |
-| simple integer op | `LUI` / `AUIPC` | Yes | same dependency rules |
-| ALU | dependent ALU | No | slot1 RAW; replay |
-| same nonzero destination | same nonzero destination | No | WAW; replay |
-| memory | anything | No | baseline LSU serialization |
-| anything | memory | No | lane1 has no LSU |
-| branch/JAL/JALR | anything | No | control-flow serialization |
-| M-extension | anything | No | lane0-only MDU baseline |
-| system/illegal | anything | No | precise serializing trap behavior |
+The core resolves control flow in lane 0, flushes buffered wrong-path instructions on redirect, clears JALR target bit 0, and uses **IALIGN=32** because RVC is not implemented. Taken branch/jump targets that are not 4-byte aligned raise instruction-address-misaligned; a not-taken branch does not trap merely because its encoded target is misaligned.
 
-See [`docs/dual_issue_matrix.md`](docs/dual_issue_matrix.md) for the exact implemented matrix.
-
-## Forwarding and hazards
-
-Operand selection gives priority to the newest valid producer and instruments three bypass classes:
-
-- **EX forwarding** for ready ALU/MUL/link results
-- **MEM forwarding**, including load data once available
-- **WB forwarding** as the final bypass source
-
-A load result still resident in EX causes a one-cycle load-use stall. DIV/REM holds EX until the iterative divider asserts completion. Intra-pair RAW/WAW is blocked rather than using same-cycle lane0-to-lane1 forwarding in this baseline.
-
-## Control flow and precise traps
-
-- static not-taken baseline prediction
-- all six RV32I conditional branch classes
-- `JAL` and `JALR` redirects
-- buffered wrong-path instructions flushed on redirect
-- `JALR` clears target bit 0 before alignment evaluation
-- no RVC support, therefore **IALIGN=32**
-- taken branch/jump to a non-4-byte-aligned target raises instruction-address-misaligned
-- a not-taken branch does not trap merely because its encoded target would be misaligned
-- load/store misalignment suppresses the external transaction and produces the corresponding baseline trap/halt indication
-- once `halted` is asserted, architectural commit, register-file writes, and data-memory accesses are suppressed
-
-## RV32M implementation
-
-The multiply path supports all four RV32M multiply result forms. DIV/REM uses a restoring iterative divider. With the default `DIV_LATENCY=8`, four radix-2 quotient iterations are unrolled per clock for 32 total quotient steps across eight busy clocks. Divide-by-zero and signed `INT_MIN / -1` corner cases follow the RISC-V M-extension architectural results.
-
-The Python mirror of the divider algorithm has executed **20,000 deterministic differential comparisons**; this remains algorithmic/model evidence until RTL simulation closes the hardware gate.
-
-## Memory system
-
-The baseline exposes separate instruction and data interfaces. Lane 0 owns the LSU and the baseline permits at most one memory operation per issue cycle.
-
-Implemented behavior includes:
-
-- `LB/LBU/LH/LHU/LW`
-- `SB/SH/SW`
-- byte enables for all four byte lanes
-- aligned upper/lower halfword lanes
-- sign and zero extension
-- halfword/word alignment checks
+Load/store misalignment suppresses the external memory transaction. Once `halted` is asserted, commit, register-file writes, issue, and data-memory side effects are suppressed.
 
 ## Verification architecture
 
@@ -210,84 +134,69 @@ Assembly / Generated Programs
             v
       Program Encoder
             |
-            +---------------------+
-            |                     |
-            v                     v
-   Python RV32IM Model      RTL Testbench
-            |                     |
-            +------ compare ------+
+            +----------------------+
+            |                      |
+            v                      v
+   Python RV32IM Model       SystemVerilog RTL
+            |                      |
+            +------ compare -------+
                      |
                 Commit Trace
 ```
 
-The verification stack includes:
+The RTL regression runs 41 directed programs and 50 deterministic random programs under Verilator, comparing architectural commit behavior and terminal trap state against the Python RV32IM model. The reference layer additionally runs 500 random seeds before the EDA jobs start.
 
-1. 41 directed architectural programs with generated expected-state metadata
-2. 500 deterministic random architectural seeds
-3. Python RV32IM architectural model
-4. commit-trace scoreboard infrastructure for RTL differential checking
-5. issue-policy and cycle-oriented microarchitecture models
-6. 100k-cycle front-end replay stress model
-7. restoring-divider differential stress
-8. portable RTL assertions and formal harnesses
-9. Verilator/Yosys/SymbiYosys automation and strict GitHub CI configuration
-
-Directed coverage includes ALU/immediate operations, dual issue, RAW, WAW, slot1 replay, EX/MEM/WB forwarding stimuli, load-use, branches/jumps/flush, wrong-path suppression, loads/stores, byte/halfword lanes, misalignment, all RV32M operations, divide-by-zero, signed overflow, x0, ECALL/EBREAK, instruction alignment, and reserved/illegal encoding classes.
+RTL functional-event coverage closed **58/58 points** across branch outcomes, all load/store sizes and byte lanes, all eight M operations, trap classes, dual/single issue, RAW/WAW/structural blocking, replay/redirect behavior, EX/MEM/WB forwarding, load-use stalls, and divider stalls.
 
 See [`docs/verification_plan.md`](docs/verification_plan.md).
 
-## Performance: model vs RTL
+## Formal verification
 
-### Executed model-level evidence
+The executed formal flow uses **Yosys-Slang + Yosys SAT** and is fail-fast on the first proof failure.
 
-- independent ALU issue-policy stream: **2.000 issue IPC**
-- dependency chain: **1.000 issue IPC**
-- cycle-oriented model: **500/500** workloads
-- mean model 2-wide IPC: **0.615**
-- mean model speedup vs forced single issue: **1.187x**
+- **Issue harness — PASS:** symbolic primary inputs prove issue ordering and RAW/WAW/structural blocking.
+- **ALU/branch harness — PASS:** symbolic operands/opcodes compare RTL outputs against an independently written expected function.
+- **Core control/order harness — PASS through 32 cycles:** bounded base-case proof covers front-end queue adjacency/alignment, slot replay, redirects, lane legality, issue ordering, precise exception ordering, memory-side-effect legality, halted-state suppression, divider stall behavior, and temporal pipeline movement.
 
-These values are **model-only** and are deliberately not presented as RTL performance.
+The 32-cycle core proof uses explicit formal cutpoints for RF read data and ALU/MUL/DIV/branch result values. This is a **compositional control proof**: datapath values are arbitrary at those cutpoints, so the control invariants must hold for all such values; it is not presented as a monolithic proof of all RV32IM arithmetic semantics.
 
-### RTL-measured performance
+The retained solver report records `SUCCESS` for issue and ALU/branch and `proved base case for 32 steps: SUCCESS!` for the core target.
 
-`make rtl-perf` builds the same core with `ENABLE_DUAL_ISSUE=1` and `ENABLE_DUAL_ISSUE=0` and is prepared to report real cycles, IPC, dual-issue count, and speedup once an HDL simulator executes it. No RTL performance number is claimed in the checked-in baseline environment.
+## RTL-measured performance
+
+The performance job compiles the same RTL with only `ENABLE_DUAL_ISSUE` changed between single-issue and 2-wide configurations.
+
+| Program | Retired | Single cycles | 2-wide cycles | Single IPC | 2-wide IPC | Speedup | Dual-issue cycles |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| dependent chain | 100 | 105 | 105 | 0.952 | 0.952 | **1.000x** | 0 |
+| independent ALU stream | 200 | 205 | 105 | 0.976 | **1.905** | **1.952x** | 100 |
+
+This demonstrates the intended behavior: the 2-wide machine approaches 2× throughput on pairable independent integer work while preserving single-issue behavior on a dependency chain.
 
 See [`docs/performance_analysis.md`](docs/performance_analysis.md).
 
-## Formal and ASIC infrastructure
+## Synthesis and lint
 
-Formal targets cover controlled reset plus invariants for x0, issue legality, slot1 replay, redirect flush, precise exceptions, front-end adjacency/alignment, memory-side-effect ordering, and EX→MEM age preservation. The SBY/yosys-slang files are included, but solver execution remains environment-dependent until the tool chain runs.
+Run #20 completed generic Yosys synthesis with **0 `check` problems**. After generic technology mapping the design contained **43,289 Yosys primitive cells**. This is a technology-independent complexity metric only; it is **not** standard-cell area and must not be compared directly with an ASIC gate-equivalent figure.
 
-The ASIC flow separates generic synthesis from technology-dependent results:
+Verilator lint passed the repository policy with **12 warnings**, all from explicitly allowed `UNUSEDSIGNAL` / `UNUSEDPARAM` categories, and **0 unexpected warnings**.
 
-- Yosys generic synthesis scripts
-- optional technology mapping with a user-supplied `LIBERTY_FILE`
-- optional OpenSTA/Yosys timing reporting with an explicit `SDC_FILE` or `CLOCK_PERIOD_NS`
-
-No cell count, area, WNS/TNS, maximum frequency, or power value is invented. See [`docs/asic_timing_flow.md`](docs/asic_timing_flow.md).
+For technology-mapped ASIC work, `make asic` requires a real `LIBERTY_FILE`; STA additionally requires `SDC_FILE` or an explicit `CLOCK_PERIOD_NS`. No area, WNS/TNS, maximum frequency, or power number is invented.
 
 ## Repository structure
 
 ```text
 Superscalar-RISCV-Core/
 ├── rtl/                  # synthesizable SystemVerilog
-│   ├── common/
-│   ├── core/
-│   ├── decode/
-│   ├── execute/
-│   ├── issue/
-│   ├── memory/
-│   ├── branch/
-│   └── mdu/
-├── tb/                   # self-checking testbench and Python tests
-├── sw/                   # assembly/hex/expected directed programs
-├── reference_model/      # architectural + issue/pipeline models
-├── scripts/              # regression, audit, lint, formal, synth helpers
-├── formal/               # SymbiYosys/yosys-slang targets
+├── tb/                   # self-checking RTL testbench + assertions
+├── sw/                   # directed/random program images and metadata
+├── reference_model/      # architectural + issue/timing models
+├── scripts/              # regression, coverage, lint, formal, synthesis helpers
+├── formal/               # formal harnesses and portable SBY targets
 ├── synthesis/            # generic synthesis scripts
-├── reports/              # retained human-readable evidence/status
-├── docs/                 # architecture and verification documentation
-├── tools/                # local OSS CAD Suite bootstrap helpers
+├── reports/              # retained local/reference reports
+├── docs/                 # architecture, verification, performance, tool docs
+├── tools/                # OSS CAD Suite bootstrap helpers
 ├── .github/workflows/    # strict CI
 ├── Makefile
 └── README.md
@@ -295,104 +204,66 @@ Superscalar-RISCV-Core/
 
 ## Quick start
 
-### Python/reference verification
+Reference/model checks:
 
 ```bash
 python3 -m pip install pytest
-python3 scripts/run_all_checks.py
-```
-
-or:
-
-```bash
 make test
 ```
 
-### Focused targets
+Focused EDA targets:
 
 ```bash
-make reference      # directed generation + architectural reference regression
-make microarch      # cycle-oriented microarchitecture model
-make coverage       # reference/stimulus coverage
-make rtl            # real RTL regression with Verilator or Icarus
-make rtl-coverage   # analyze RTL event coverage after simulation
-make rtl-perf       # real single-vs-dual RTL performance comparison
+make rtl            # RTL differential regression
+make rtl-coverage   # RTL event coverage
+make rtl-perf       # single-vs-dual RTL performance
 make lint           # Verilator lint
-make formal         # SBY formal targets
+make formal         # Yosys-Slang/Yosys SAT formal proofs
 make synth          # generic Yosys synthesis
 ```
 
-### Technology-mapped ASIC flow
+Technology-mapped flow:
 
 ```bash
 export LIBERTY_FILE=/absolute/path/to/stdcells.lib
 make asic
 ```
 
-For STA, additionally provide `SDC_FILE` or an explicitly selected `CLOCK_PERIOD_NS`. The flow has no default timing target.
+On Windows/WSL, see [`docs/tool_setup_windows.md`](docs/tool_setup_windows.md) and `tools/run_full_verification.ps1`.
 
-## Windows / WSL
+## CI
 
-The project is designed to work from an E: drive checkout such as:
+`.github/workflows/rtl-ci.yml` exposes five mandatory jobs:
 
-```text
-E:\Superscalar_RISCV_Core
-```
+1. Python / Reference Verification
+2. RTL Simulation / Coverage / Performance
+3. Verilator Lint
+4. Formal Verification
+5. Yosys Synthesis
 
-The helper below bootstraps OSS CAD Suite into the project-local `tools/` area and runs the strict verification flow without requiring an EDA installation on C:\:
-
-```powershell
-tools\run_full_verification.ps1
-```
-
-See [`docs/tool_setup_windows.md`](docs/tool_setup_windows.md).
-
-## GitHub CI
-
-`.github/workflows/rtl-ci.yml` separates the verification surface into visible jobs:
-
-- Python/reference verification
-- RTL simulation + RTL coverage + RTL performance
-- Verilator lint
-- formal solver execution
-- Yosys synthesis
-
-The EDA jobs use OSS CAD Suite and fail if a required tool/gate is unavailable; mandatory failures are not hidden with `continue-on-error`.
+The EDA jobs use OSS CAD Suite and mandatory failures are not hidden with `continue-on-error`.
 
 ## Limitations
 
-The baseline intentionally excludes:
+The baseline intentionally excludes out-of-order execution, register renaming/ROB, same-cycle inter-lane forwarding, caches, MMU/virtual memory, full privileged architecture/interrupts, Linux boot, RVC, floating point/vector extensions, cache coherence, lane1 LSU/MDU, and dynamic branch prediction beyond static not-taken.
 
-- out-of-order execution
-- register renaming / reorder buffer
-- same-cycle inter-lane forwarding
-- MMU / virtual memory / page tables
-- full privileged architecture and interrupt subsystem
-- Linux boot support
-- RVC compressed instructions
-- floating point and vector extensions
-- instruction/data caches
-- cache coherence
-- branch predictor/BTB beyond static not-taken
-- lane1 LSU/MDU support
-
-This is an educational/research RTL core and is **not** described as silicon-proven, security-certified, production-ready, or tapeout-ready.
+This is an **educational/research RTL core**, not a claim of silicon-proven, security-certified, production-ready, or tapeout-ready hardware.
 
 ## Roadmap
 
-- [ ] close full RTL regression under Verilator/Icarus
-- [ ] close RTL functional coverage and commit-trace equivalence
-- [ ] close formal proofs under SBY
+- [x] close RTL differential regression under Verilator
+- [x] close RTL functional event coverage
+- [x] measure single-vs-dual RTL IPC and speedup
+- [x] close executable issue, ALU/branch, and 32-cycle core formal targets
+- [x] close generic Yosys synthesis and Verilator lint in CI
 - [ ] technology-map with a characterized standard-cell library
-- [ ] measure real RTL IPC and dual-issue speedup
+- [ ] run characterized STA with explicit constraints
 - [ ] add BTB + 2-bit branch predictor
-- [ ] add instruction cache
-- [ ] add data cache
-- [ ] pipeline/decouple MDU where useful
-- [ ] evaluate lane1 LSU support
-- [ ] add store buffer
+- [ ] evaluate lane0 ALU + lane1 memory pairing
 - [ ] evaluate same-cycle lane0→lane1 forwarding
-- [ ] optional deeper-pipeline / scoreboard successor architecture
+- [ ] pipeline/decouple MDU where useful
+- [ ] add instruction/data caches
+- [ ] optional scoreboard / register-renaming successor architecture
 
 ## Documentation
 
@@ -400,6 +271,7 @@ This is an educational/research RTL core and is **not** described as silicon-pro
 - [Dual-issue matrix](docs/dual_issue_matrix.md)
 - [Verification plan](docs/verification_plan.md)
 - [Performance analysis](docs/performance_analysis.md)
+- [CI evidence](docs/ci_evidence.md)
 - [ASIC timing flow](docs/asic_timing_flow.md)
 - [Specification sources](docs/spec_sources.md)
 

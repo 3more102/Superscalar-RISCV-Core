@@ -59,34 +59,40 @@ else:
 h=ROOT/'formal'/'core_harness.sv'
 if h.is_file():
     ht=h.read_text()
-    for needle in (
-        'input logic reset_n',
-        'input logic [31:0] imem_rdata0',
-        'input logic [31:0] imem_rdata1',
-        'input logic [31:0] dmem_rdata',
-        'assume (!reset_n)',
-        'assume (reset_n)',
-        'f_seen_clock',
-    ):
-        if needle not in ht:
-            issues.append(f'formal/core_harness.sv: reset/symbolic-environment marker missing: {needle}')
+    core_patterns=(
+        r'\binput\s+logic\s+reset_n\b',
+        r'\binput\s+logic\s*\[31:0\]\s+imem_rdata0\b',
+        r'\binput\s+logic\s*\[31:0\]\s+imem_rdata1\b',
+        r'\binput\s+logic\s*\[31:0\]\s+dmem_rdata\b',
+        r'assume\s*\(\s*!reset_n\s*\)',
+        r'assume\s*\(\s*reset_n\s*\)',
+        r'\bf_seen_clock\b',
+    )
+    for pattern in core_patterns:
+        if not re.search(pattern, ht):
+            issues.append(f'formal/core_harness.sv: reset/symbolic-environment pattern missing: {pattern}')
 else:
     issues.append('formal/core_harness.sv missing')
 
 # Combinational proof harnesses must expose their stimulus as top-level primary
 # inputs so Yosys SAT receives real symbolic variables rather than undriven Xs.
-for rel, markers in {
+# Match by syntax with flexible whitespace rather than brittle exact strings.
+for rel, patterns in {
     'formal/issue_harness.sv': (
-        'input riscv_pkg::decoded_t d0',
-        'input riscv_pkg::decoded_t d1',
-        'input logic stall0',
-        'input logic stall1',
+        r'\binput\s+riscv_pkg::decoded_t\s+d0\b',
+        r'\binput\s+riscv_pkg::decoded_t\s+d1\b',
+        r'\binput\s+logic\s+stall0\b',
+        r'\binput\s+logic\s+stall1\b',
     ),
     'formal/alu_branch_harness.sv': (
-        'input logic [31:0] a',
-        'input logic [31:0] b',
-        'input riscv_pkg::alu_op_e alu_op',
-        'input riscv_pkg::branch_op_e br_op',
+        r'\binput\s+logic\s*\[31:0\]\s+a\b',
+        r'\binput\s+logic\s*\[31:0\]\s+b\b',
+        r'\binput\s+riscv_pkg::alu_op_e\s+alu_op\b',
+        r'\binput\s+riscv_pkg::branch_op_e\s+br_op\b',
+        r'\boutput\s+logic\s*\[31:0\]\s+actual_y\b',
+        r'\boutput\s+logic\s*\[31:0\]\s+expected_y\b',
+        r'\bassert\s*\(\s*actual_y\s*==\s*expected_y\s*\)',
+        r'\bassert\s*\(\s*actual_taken\s*==\s*expected_taken\s*\)',
     ),
 }.items():
     p=ROOT/rel
@@ -94,9 +100,9 @@ for rel, markers in {
         issues.append(f'{rel} missing')
         continue
     text=p.read_text()
-    for needle in markers:
-        if needle not in text:
-            issues.append(f'{rel}: symbolic-primary-input marker missing: {needle}')
+    for pattern in patterns:
+        if not re.search(pattern, text):
+            issues.append(f'{rel}: symbolic-primary-input/specification pattern missing: {pattern}')
 
 rtl=ROOT/'rtl'/'core'/'superscalar_core.sv'
 if rtl.is_file():

@@ -1,6 +1,6 @@
 # CI Verification Evidence
 
-This page records the **latest fully green source/tool-flow baseline** and preserves the first fully green execution of the strengthened verification flow for historical provenance.
+This page records the **latest fully green source/tool-flow baseline**, a subsequent full revalidation of the evidence-refresh commit, and the first fully green execution of the strengthened verification flow for historical provenance.
 
 ## Latest fully green source/tool-flow baseline
 
@@ -19,7 +19,17 @@ All five mandatory jobs completed with conclusion `success` on that commit:
 4. Formal Verification
 5. Yosys Synthesis
 
-The RTL job separately executed commit-trace regression, functional-event coverage, RTL line/branch/toggle code coverage, and single-vs-dual performance. The code-coverage step completed successfully before the RTL job was archived. Documentation-only and repository-presentation changes are excluded from the expensive EDA suite, while RTL, verification, formal, synthesis, and workflow changes remain strict CI triggers. The workflow also executes every Monday at `03:17 UTC` for reproducibility.
+The RTL job separately executed commit-trace regression, functional-event coverage, RTL line/branch/toggle code coverage, and single-vs-dual performance. The code-coverage step completed successfully before the RTL job was archived.
+
+### Current-HEAD evidence revalidation
+
+The documentation/report evidence-refresh commit [`0b00e18ae9a4ddb474c24b169c3a078886fbc824`](https://github.com/3more102/Superscalar-RISCV-Core/commit/0b00e18ae9a4ddb474c24b169c3a078886fbc824) did not alter RTL, testbench, reference-model, formal, synthesis, or verification-script behavior. Because it modified `reports/final_verification_summary.md`, which is not in the workflow `paths-ignore` list, it correctly triggered GitHub Actions [run #49 / `33903013127`](https://github.com/3more102/Superscalar-RISCV-Core/actions/runs/33903013127).
+
+Run #49 completed with overall conclusion **success**. All five mandatory jobs passed again, including 91-program RTL differential regression, 58/58 functional-event coverage, RTL line/branch/toggle code coverage, RTL single-vs-dual performance, Verilator lint, Yosys synthesis, and formal verification.
+
+Pushes limited to `README.md`, `CHANGELOG.md`, `docs/**`, and the other presentation files explicitly listed in `.github/workflows/rtl-ci.yml` are ignored by push/pull-request CI. `reports/**` is intentionally not part of that ignore set.
+
+The workflow also executes every Monday at `03:17 UTC` for reproducibility.
 
 ### Run #48 retained GitHub Actions artifacts
 

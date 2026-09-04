@@ -20,7 +20,7 @@ A synthesizable **32-bit, 2-wide superscalar, in-order issue / in-order retireme
 
 ## Verified status
 
-The latest fully green **source/tool-flow baseline** is GitHub Actions **run #48**, commit [`9a620d9`](https://github.com/3more102/Superscalar-RISCV-Core/commit/9a620d9d2b6ab2970b3a54f6852fae9684afe5ad). All five mandatory jobs passed on that same revision, including the new RTL-only line/branch/toggle code-coverage gate. Documentation commits after that verified revision do not modify RTL, testbench, reference-model, formal, synthesis, or verification-script behavior. The CI badge above tracks the current `main` branch.
+The latest fully green **source/tool-flow baseline** is GitHub Actions **run #48**, commit [`9a620d9`](https://github.com/3more102/Superscalar-RISCV-Core/commit/9a620d9d2b6ab2970b3a54f6852fae9684afe5ad). All five mandatory jobs passed on that same revision, including the RTL-only line/branch/toggle code-coverage gate. The evidence-refresh commit [`0b00e18`](https://github.com/3more102/Superscalar-RISCV-Core/commit/0b00e18ae9a4ddb474c24b169c3a078886fbc824) changed documentation/report text only and was subsequently revalidated by GitHub Actions **run #49**, where all five jobs again completed successfully. The CI badge above tracks the current `main` branch.
 
 | Gate | Executed result |
 |---|---:|
@@ -259,7 +259,9 @@ On Windows/WSL, see [`docs/tool_setup_windows.md`](docs/tool_setup_windows.md) a
 4. Formal Verification
 5. Yosys Synthesis
 
-The RTL job requires commit-trace regression, functional-event coverage, RTL line/branch/toggle code coverage, and single-vs-dual performance to succeed. The EDA jobs use OSS CAD Suite and mandatory failures are not hidden with `continue-on-error`. Source/tool-flow changes trigger the strict suite, and the workflow also runs automatically every Monday at **03:17 UTC** as a reproducibility check. Documentation-only and repository-presentation changes are intentionally excluded from the expensive EDA rerun.
+The RTL job requires commit-trace regression, functional-event coverage, RTL line/branch/toggle code coverage, and single-vs-dual performance to succeed. The EDA jobs use OSS CAD Suite and mandatory failures are not hidden with `continue-on-error`. Source/tool-flow changes trigger the strict suite, and the workflow also runs automatically every Monday at **03:17 UTC** as a reproducibility check.
+
+Pushes limited to `README.md`, `CHANGELOG.md`, `docs/**`, and the other explicitly listed repository-presentation files are ignored by push/pull-request CI. Changes under `reports/**` are **not** ignored because retained verification reports are part of the engineering record; the run #49 evidence-refresh commit therefore correctly triggered the full five-job suite.
 
 ## Limitations
 

@@ -1,0 +1,79 @@
+name: Create v0.2.0 Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/create-v0.2.0-release.yml
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Create verified release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view v0.2.0 >/dev/null 2>&1; then
+            echo "v0.2.0 already exists"
+            exit 0
+          fi
+          cat > "$RUNNER_TEMP/release-notes.md" <<'EOF'
+          # 2-Wide Superscalar RV32IM Core — v0.2.0
+
+          Engineering/educational RTL release with executed architectural, RTL, formal, lint, and generic synthesis evidence.
+
+          ## Architecture
+          - RV32IM, 32-bit, 2-wide fetch/decode/issue
+          - conservative in-order issue and in-order retirement
+          - slot-1 replay with RAW/WAW/resource checks
+          - EX/MEM/WB forwarding and load-use handling
+          - lane-0 ALU/control/LSU/MDU and lane-1 integer ALU baseline
+          - static not-taken control policy with redirect/flush handling
+          - Harvard-style instruction/data interfaces
+          - iterative RV32M divider
+          - precise educational trap/halt behavior with IALIGN=32
+
+          ## Executed verification evidence
+          Retained green baseline: GitHub Actions run #20 on commit `94f688763d81035057f7fe00959bfd4f3e3948fc`; subsequent documentation-only run #22 is also green.
+
+          - Python tests: **25/25 PASS**
+          - directed architectural reference tests: **41/41 PASS**
+          - random architectural reference seeds: **500/500 PASS**
+          - reference commits checked: **47,280**
+          - required ISA mnemonics exercised: **47/47**
+          - reference/stimulus functional coverage: **54/54**
+          - divider differential stress: **20,000/20,000 PASS**
+          - front-end replay stress: **100,000/100,000 cycles PASS**
+          - RTL differential regression: **91/91 PASS** — 41 directed + 50 random
+          - RTL functional event coverage: **58/58 PASS**
+          - Verilator lint policy: **PASS** — 0 unexpected warnings
+          - formal issue proof: **PASS**
+          - formal ALU/branch equivalence proof: **PASS**
+          - formal compositional core control/order proof: **PASS through 32 cycles**
+          - generic Yosys synthesis: **PASS**, 43,289 generic primitive cells, 0 check problems
+
+          ## RTL-measured performance
+          Same RTL, changing only `ENABLE_DUAL_ISSUE`:
+
+          | Program | Single IPC | 2-wide IPC | Speedup | Dual-issue cycles |
+          |---|---:|---:|---:|---:|
+          | dependency chain (100 retired) | 0.952 | 0.952 | 1.000x | 0 |
+          | independent ALU stream (200 retired) | 0.976 | 1.905 | 1.952x | 100 |
+
+          ## Important limitations
+          This release does **not** claim characterized ASIC area, WNS/TNS, maximum frequency, power, post-layout timing, PPA, silicon validation, full privileged ISA, Linux boot, caches, MMU, RVC, floating point/vector extensions, out-of-order execution, register renaming, or a ROB.
+
+          Technology-dependent PPA requires a characterized standard-cell Liberty and timing constraints. The 43,289-cell number is a Yosys generic primitive count, not standard-cell area.
+
+          See `README.md` and `docs/ci_evidence.md` for provenance, artifact digests, and detailed verification interpretation.
+          EOF
+          gh release create v0.2.0 \
+            --target 9e8326304db87071021fa241ff8482038e275767 \
+            --title "2-Wide Superscalar RV32IM Core — Verification Infrastructure Release" \
+            --notes-file "$RUNNER_TEMP/release-notes.md"

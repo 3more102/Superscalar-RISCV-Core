@@ -7,9 +7,14 @@ It compiles an instrumented Verilator binary, runs the same 41 directed and
 coverage databases, and reports coverage points from synthesizable RTL files
 only (the testbench is excluded from the reported percentages).
 
+Definition-only SystemVerilog packages are recorded but are not required to
+produce executable coverage points. Every synthesizable RTL source that is
+not package-only must appear in both the LCOV database and annotated output.
+
 No minimum percentage is enforced in the first baseline. The gate fails only
-if the simulator/coverage tools fail, a test fails to execute, or an expected
-coverage class contains no measurable RTL points.
+if the simulator/coverage tools fail, a test fails to execute, an executable
+RTL source is missing from coverage evidence, or an expected coverage class
+contains no measurable RTL points.
 """
 from __future__ import annotations
 
@@ -56,6 +61,13 @@ rtl_rel = [
     if line.strip()
 ]
 rtl_names = {Path(p).name for p in rtl_rel}
+package_only_names = {
+    Path(rel).name
+    for rel in rtl_rel
+    if re.search(r"^\s*package\s+\w+", (ROOT / rel).read_text(errors="ignore"), re.MULTILINE)
+    and not re.search(r"^\s*module\s+\w+", (ROOT / rel).read_text(errors="ignore"), re.MULTILINE)
+}
+measurable_rtl_names = rtl_names - package_only_names
 
 compile_cmd = [
     verilator,
@@ -90,6 +102,7 @@ programs: list[tuple[str, Path]] = []
 for hp in sorted((ROOT / "sw" / "hex").glob("[0-9][0-9]_*.hex")):
     programs.append((hp.stem, hp))
 
+directed_count = len(programs)
 rnd = TMP / "random"
 rnd.mkdir(parents=True, exist_ok=True)
 for seed in range(1, 51):
@@ -162,6 +175,13 @@ if lcov.returncode:
     print(lcov.stdout, lcov.stderr)
     raise SystemExit(lcov.returncode)
 
+lcov_source_names = {
+    Path(line[3:]).name
+    for line in info.read_text(errors="ignore").splitlines()
+    if line.startswith("SF:")
+}
+missing_from_lcov = sorted(measurable_rtl_names - lcov_source_names)
+
 annotate = subprocess.run(
     [
         verilator_coverage,
@@ -195,7 +215,7 @@ counts = {
 }
 matched_files: set[str] = set()
 for p in ANNOTATED.rglob("*"):
-    if not p.is_file() or p.name not in rtl_names:
+    if not p.is_file() or p.name not in measurable_rtl_names:
         continue
     matched_files.add(p.name)
     for line in p.read_text(errors="ignore").splitlines():
@@ -212,17 +232,24 @@ for kind, vals in counts.items():
         100.0 * vals["covered"] / vals["total"] if vals["total"] else None
     )
 
-missing_rtl = sorted(rtl_names - matched_files)
-valid = not missing_rtl and all(counts[k]["total"] > 0 for k in counts)
+missing_annotated = sorted(measurable_rtl_names - matched_files)
+valid = (
+    not missing_from_lcov
+    and not missing_annotated
+    and all(counts[k]["total"] > 0 for k in counts)
+)
 result = {
     "label": "VERILATOR RTL CODE COVERAGE",
     "backend": "Verilator",
     "tests_executed": len(programs),
-    "directed_tests": len(list((ROOT / "sw" / "hex").glob("[0-9][0-9]_*.hex"))),
+    "directed_tests": directed_count,
     "random_tests": 50,
-    "rtl_files_expected": len(rtl_names),
-    "rtl_files_annotated": len(matched_files),
-    "missing_rtl_files": missing_rtl,
+    "rtl_sources_total": len(rtl_names),
+    "definition_only_packages_excluded": sorted(package_only_names),
+    "measurable_rtl_files_expected": len(measurable_rtl_names),
+    "measurable_rtl_files_annotated": len(matched_files),
+    "missing_measurable_rtl_from_lcov": missing_from_lcov,
+    "missing_measurable_rtl_from_annotation": missing_annotated,
     "coverage": counts,
     "coverage_threshold_enforced": False,
     "valid_non_vacuous_report": valid,
@@ -234,8 +261,16 @@ lines = [
     "",
     "Coverage source: **Verilator instrumented RTL simulation**.",
     "",
-    f"Programs executed: **{len(programs)}** — {result['directed_tests']} directed + 50 deterministic random.",
-    f"Synthesizable RTL files measured: **{len(matched_files)}/{len(rtl_names)}**.",
+    f"Programs executed: **{len(programs)}** — {directed_count} directed + 50 deterministic random.",
+    f"Measurable synthesizable RTL files: **{len(matched_files)}/{len(measurable_rtl_names)}**.",
+]
+if package_only_names:
+    lines.append(
+        "Definition-only package sources excluded from executable coverage: "
+        + ", ".join(f"`{x}`" for x in sorted(package_only_names))
+        + "."
+    )
+lines += [
     "",
     "| Coverage type | Covered points | Total points | Coverage |",
     "|---|---:|---:|---:|",
@@ -249,12 +284,15 @@ for kind in ("line", "branch", "toggle"):
 lines += [
     "",
     "The percentages above are **RTL-only**: annotated testbench files are excluded.",
+    "Definition-only packages are reported separately because Verilator does not emit executable coverage points for declarations/typedefs alone.",
     "A coverage point is counted as covered when it executed/toggled at least once (`--annotate-min 1`).",
-    "No arbitrary pass-percentage threshold is enforced in this first measured baseline; the gate verifies that code-coverage instrumentation, collection, merge, and all three RTL coverage classes are non-vacuous.",
+    "No arbitrary pass-percentage threshold is enforced in this first measured baseline; the gate verifies instrumentation, collection, merge, all measurable RTL sources, and all three coverage classes are non-vacuous.",
     "This report is separate from the project's 58/58 architectural functional-event coverage points.",
 ]
-if missing_rtl:
-    lines += ["", "Missing annotated RTL files: " + ", ".join(missing_rtl)]
+if missing_from_lcov:
+    lines += ["", "Missing measurable RTL files from LCOV: " + ", ".join(missing_from_lcov)]
+if missing_annotated:
+    lines += ["", "Missing measurable RTL files from annotation: " + ", ".join(missing_annotated)]
 out = "\n".join(lines) + "\n"
 (COV / "verilator_code_coverage.md").write_text(out)
 print(out, end="")

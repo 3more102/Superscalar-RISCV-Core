@@ -2,7 +2,15 @@ name: RTL CI
 
 on:
   push:
+    paths-ignore:
+      - '.github/CODEOWNERS'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/pull_request_template.md'
   pull_request:
+    paths-ignore:
+      - '.github/CODEOWNERS'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/pull_request_template.md'
   workflow_dispatch:
 
 permissions:

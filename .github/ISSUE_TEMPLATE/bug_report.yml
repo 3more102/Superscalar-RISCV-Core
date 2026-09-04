@@ -1,0 +1,76 @@
+name: RTL / Verification Bug
+
+description: Report a reproducible functional, verification, formal, synthesis, or tooling defect.
+title: "bug: "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please report the **first reproducible divergence**. Do not change expected output merely to make incorrect RTL pass.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - RTL / microarchitecture
+        - Testbench / commit-trace checker
+        - Reference model / test generation
+        - Formal verification
+        - Lint / synthesis / ASIC tooling
+        - CI / repository tooling
+        - Documentation
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Problem summary
+      description: What is wrong, and what behavior was expected?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction
+      description: Include the exact command, test/program name, seed if applicable, and relevant tool version.
+      placeholder: |
+        make rtl
+        failing program: 05_branches.hex
+        first divergence: PC=0x...
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: First failing evidence
+      description: Provide the first mismatching PC/instruction, assertion/proof obligation, or synthesis/lint error. Link CI artifacts when available.
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: |
+        OS:
+        Verilator:
+        Yosys:
+        OSS CAD Suite:
+        Python:
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: discipline
+    attributes:
+      label: Verification discipline
+      options:
+        - label: I preserved the failing testcase/seed instead of weakening or deleting it.
+          required: true
+        - label: I am not presenting model-only output as RTL-measured evidence.
+          required: true

@@ -7,9 +7,20 @@
 
 A synthesizable **32-bit, 2-wide superscalar, in-order issue / in-order retirement RV32IM processor core** written in SystemVerilog. The project is built as a CPU-microarchitecture and RTL-verification portfolio piece: dual fetch/decode/issue, dependency-aware pairing, replay, EX/MEM/WB forwarding, branch recovery, a single-port LSU, RV32M with an iterative divider, precise educational trap handling, differential commit-trace verification, formal properties, and open-source synthesis automation.
 
+## What this project demonstrates
+
+- **CPU microarchitecture design:** 2-wide fetch/decode/issue, conservative superscalar pairing, replay, in-order retirement, control-flow recovery, and precise architectural ordering.
+- **Synthesizable SystemVerilog RTL:** modular decode, ALU, branch, register-file, issue, LSU, multiply/divide, and top-level pipeline implementation.
+- **Dependency and hazard engineering:** RAW/WAW/resource checks, EX/MEM/WB forwarding, load-use handling, divider stalls, and younger-slot replay.
+- **RV32IM implementation:** base integer ISA, all eight M-extension operations, alignment handling, illegal encodings, ECALL/EBREAK, and JALR/IALIGN corner cases.
+- **Self-checking verification:** directed programs, deterministic random workloads, a Python architectural reference model, commit-trace differential checking, and functional-event coverage.
+- **Formal verification:** symbolic issue and ALU/branch proofs plus a bounded 32-cycle compositional control/order proof using Yosys-Slang and Yosys SAT.
+- **Measured superscalar behavior:** the same RTL is compiled as single-issue and 2-wide to quantify IPC and speedup on dependent versus independent workloads.
+- **Open-source ASIC/EDA flow design:** strict GitHub Actions CI, Verilator lint/simulation, Yosys synthesis, formal automation, and optional Liberty-based mapped synthesis/STA infrastructure.
+
 ## Verified status
 
-The latest retained green evidence is GitHub Actions **run #20**, commit [`94f6887`](https://github.com/3more102/Superscalar-RISCV-Core/commit/94f688763d81035057f7fe00959bfd4f3e3948fc). All mandatory CI jobs passed on the same RTL revision.
+The retained fully green RTL verification baseline is GitHub Actions **run #20**, commit [`94f6887`](https://github.com/3more102/Superscalar-RISCV-Core/commit/94f688763d81035057f7fe00959bfd4f3e3948fc). All mandatory CI jobs passed on the same RTL revision; the CI badge above tracks the current `main` branch.
 
 | Gate | Executed result |
 |---|---:|
